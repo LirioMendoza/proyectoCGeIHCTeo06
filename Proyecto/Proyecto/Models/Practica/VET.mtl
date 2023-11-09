@@ -1,0 +1,15 @@
+# Blender MTL File: 'VET.blend'
+# Material Count: 1
+
+newmtl M_VET
+Ns 422.500008
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 0.499210 0.030862
+Ks 0.650000 0.650000 0.650000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd T_VET_Diffuse.png
+map_Ns T_VET_Roughness.png
+refl T_VET_Metallic.png
