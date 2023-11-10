@@ -89,6 +89,7 @@ static double limitFPS = 1.0 / 60.0;
 
 // luz direccional
 DirectionalLight mainLight;
+DirectionalLight mainLight2;
 //para declarar varias luces de tipo pointlight
 PointLight pointLights[MAX_POINT_LIGHTS];
 SpotLight spotLights[MAX_SPOT_LIGHTS];
@@ -116,6 +117,9 @@ bool recorrido2;
 bool recorrido3;
 bool recorrido4;
 
+// Variables aux ilumnación cuarto
+bool dia = true;
+int ciclos = 0;
 
 //función de calculo de normales por promedio de vértices 
 void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices, unsigned int verticeCount,
@@ -320,14 +324,6 @@ int main()
 
 
 	std::vector<std::string> skyboxFaces;
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_lf.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_dn.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_up.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_bk.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_ft.tga");
-
-	skybox = Skybox(skyboxFaces);
 
 	Material_brillante = Material(4.0f, 256);
 	Material_opaco = Material(0.3f, 4);
@@ -337,6 +333,10 @@ int main()
 		0.5f, 0.3f,
 		//+/- (Todo el esceanrio)    //+/- (En donde ilumina que tan fuerte se ve)
 		0.0f, 0.0f, -1.0f); //Vector de dirección de la luz - Eje de la luz
+	mainLight2 = DirectionalLight(1.0f, 1.0f, 1.0f,
+		0.3f, 0.3f,
+		0.0f, 0.0f, -1.0f);
+
 	//contador de luces puntuales
 	unsigned int pointLightCount = 0;
 	//Declaración de primer luz puntual - Luz roja
@@ -445,6 +445,33 @@ recorrido4 = false;
 		camera.keyControl(mainWindow.getsKeys(), deltaTime);
 		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
 
+		if (ciclos >= 10) {
+			dia = !(dia);
+			ciclos = 0;
+		}
+		//SkyBox
+		if (dia) {
+			skyboxFaces.clear();
+			skyboxFaces.push_back("Textures/Skybox/rightD.jpg");
+			skyboxFaces.push_back("Textures/Skybox/leftD.jpg");
+			skyboxFaces.push_back("Textures/Skybox/bottomD.jpg");
+			skyboxFaces.push_back("Textures/Skybox/topD.jpg");
+			skyboxFaces.push_back("Textures/Skybox/backD.jpg");
+			skyboxFaces.push_back("Textures/Skybox/frontD.jpg");
+			skybox = Skybox(skyboxFaces);
+		}
+		else {
+			skyboxFaces.clear();
+			skyboxFaces.push_back("Textures/Skybox/rightN.jpg");
+			skyboxFaces.push_back("Textures/Skybox/leftN.jpg");
+			skyboxFaces.push_back("Textures/Skybox/bottomN.jpg");
+			skyboxFaces.push_back("Textures/Skybox/topN.jpg");
+			skyboxFaces.push_back("Textures/Skybox/backN.jpg");
+			skyboxFaces.push_back("Textures/Skybox/frontN.jpg");
+			skybox = Skybox(skyboxFaces);
+		}
+		ciclos++;
+
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -466,9 +493,14 @@ recorrido4 = false;
 
 		// luz ligada a la cámara de tipo flash
 		//sirve para que en tiempo de ejecución (dentro del while) se cambien propiedades de la luz
-			glm::vec3 lowerLight = camera.getCameraPosition();
+		glm::vec3 lowerLight = camera.getCameraPosition();
 		lowerLight.y -= 0.3f;
-		spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
+		if (dia) {
+			shaderList[0].SetDirectionalLight(&mainLight);
+		}
+		else {
+			shaderList[0].SetDirectionalLight(&mainLight2);
+		}
 
 		//información al shader de fuentes de iluminación
 		shaderList[0].SetDirectionalLight(&mainLight);
@@ -477,21 +509,21 @@ recorrido4 = false;
 
 //Función para prender y apagar luces
 
-	//Prende y apagar luz puntual entre flippers
-		if (mainWindow.getLuzFlippers() == true) {
-			shaderList[0].SetPointLights(pointLights, pointLightCount);
-		}
-		else {
-			shaderList[0].SetPointLights(pointLights, pointLightCount - 2);
-		}
+	////Prende y apagar luz puntual entre flippers
+	//	if (mainWindow.getLuzFlippers() == true) {
+	//		shaderList[0].SetPointLights(pointLights, pointLightCount);
+	//	}
+	//	else {
+	//		shaderList[0].SetPointLights(pointLights, pointLightCount - 2);
+	//	}
 
-	//Prende y apagar luz puntual entre flippers
-		if (mainWindow.getLuzTablero() == true) {
-			shaderList[0].SetSpotLights(spotLights, spotLightCount);
-		}
-		else {
-			shaderList[0].SetSpotLights(spotLights, spotLightCount - 2);
-		}
+	////Prende y apagar luz puntual entre flippers
+	//	if (mainWindow.getLuzTablero() == true) {
+	//		shaderList[0].SetSpotLights(spotLights, spotLightCount);
+	//	}
+	//	else {
+	//		shaderList[0].SetSpotLights(spotLights, spotLightCount - 2);
+	//	}
 
 //Se implemeta el cambio de la cámara
 		if (mainWindow.getcambiaCamara()) { //La tecla Z para la cámara isométrica
@@ -556,10 +588,7 @@ recorrido4 = false;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 
-		pisoTexture.UseTexture();
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 
-		meshList[2]->RenderMesh();
 		/*
 		//Instancia del coche 
 		model = glm::mat4(1.0);

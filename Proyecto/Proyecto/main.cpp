@@ -346,7 +346,7 @@ int main()
 		camera.keyControl(mainWindow.getsKeys(), deltaTime);
 		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
 
-		if (ciclos >= 100) {
+		if (ciclos >= 10) {
 			dia = !(dia);
 			ciclos = 0;
 		}
