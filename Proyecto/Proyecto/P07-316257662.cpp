@@ -13,8 +13,6 @@
 #include <glm.hpp>
 #include <gtc\matrix_transform.hpp>
 #include <gtc\type_ptr.hpp>
-//para probar el importer
-//#include<assimp/Importer.hpp>
 
 #include "Window.h"
 #include "Mesh.h"
@@ -81,7 +79,6 @@ Skybox skybox;
 Material Material_brillante;
 Material Material_opaco;
 
-
 //Sphere cabeza = Sphere(0.5, 20, 20);
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
@@ -101,6 +98,9 @@ static const char* fShader = "shaders/shader_light.frag";
 
 //Variables proyecto
 
+//Función para interactuar con teclado para animación por Key frames
+void inputKeyframes(bool* keys);
+
 //Cambio de tamaño del resorte
 bool cambioTam_1;
 bool cambioTam_2;
@@ -116,6 +116,93 @@ bool recorrido2;
 bool recorrido3;
 bool recorrido4;
 
+//Variables animación por Key frames
+float iniciaAnimacion;
+float activaAnimacion;
+bool animacion = false;
+
+//Variables animación canica2
+float pos_X_Canica2 = 70.0f; //Hay que inicializar en la posición inicial
+float pos_Y_Canica2 = 119.0f; 
+float pos_Z_Canica2 = 4.0f;
+
+float movCanica2_X = 0;
+float movCanica2_Z = 0;
+
+#define MAX_FRAMES 100
+int i_max_steps = 90;
+int i_curr_steps = 7;
+
+typedef struct _frame
+{
+	//Variables para guardar Key Frames canica2
+	float movCanica2_X;
+	float movCanica2_Z;
+	float movCanica2_X_Inc;
+	float movCanica2_Z_Inc;
+
+}FRAME;
+
+FRAME KeyFrame[MAX_FRAMES];
+int FrameIndex = 7; //Cantidad de Keyframes
+bool play = false;
+int playIndex = 0;
+
+void saveFrame(void) //tecla L
+{
+	printf("frameindex %d\n", FrameIndex); //Imprimiendo key frames en pantalla
+
+	KeyFrame[FrameIndex].movCanica2_X = movCanica2_X;
+	KeyFrame[FrameIndex].movCanica2_Z = movCanica2_Z;
+
+	FrameIndex++;
+}
+
+void resetElements(void) //Tecla 0
+{
+	movCanica2_X = KeyFrame[0].movCanica2_X;
+	movCanica2_Z = KeyFrame[0].movCanica2_Z;
+}
+
+void interpolation(void)
+{
+	KeyFrame[playIndex].movCanica2_X_Inc = (KeyFrame[playIndex + 1].movCanica2_X - KeyFrame[playIndex].movCanica2_X) / i_max_steps;
+	KeyFrame[playIndex].movCanica2_Z_Inc = (KeyFrame[playIndex + 1].movCanica2_Z - KeyFrame[playIndex].movCanica2_Z) / i_max_steps;
+}
+
+
+void animate(void) //Barra espacio
+{
+	if (play)
+	{
+		if (i_curr_steps >= i_max_steps) //fin de animación entre frames?
+		{
+			playIndex++;
+			printf("\nReproduciendo cuadro no. =  %d\n", playIndex);
+			if (playIndex > FrameIndex - 2)	//Fin de toda la animación con último frame?
+			{
+				printf("\nIndice / Total de cuadros = %d\n", FrameIndex);
+				printf("\nTermino la animacion\n");
+				playIndex = 0;
+				play = false;
+			}
+			else //Interpolación del próximo cuadro
+			{
+				i_curr_steps = 0; //Resetea contador
+				//Interpolar
+				interpolation();
+			}
+		}
+		else
+		{
+			movCanica2_X += KeyFrame[playIndex].movCanica2_X_Inc;
+			movCanica2_Z += KeyFrame[playIndex].movCanica2_Z_Inc;
+			i_curr_steps++;
+
+		}
+
+	}
+}
 
 //función de calculo de normales por promedio de vértices 
 void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices, unsigned int verticeCount,
@@ -358,7 +445,7 @@ int main()
 	unsigned int spotLightCount = 0;
 	//linterna
 	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
-		0.8f, 8.0f,
+		0.8f, 4.0f,
 		0.0f, 0.0f, 0.0f, //Posición de la luz
 		0.0f, -1.0f, 0.0f,
 		1.0f, 0.0f, 0.0f,
@@ -421,17 +508,41 @@ int main()
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
 	////Loop mientras no se cierra la ventana
 
-//Variables animación básica canica1
-movCanica1_X = 125.0f;
-movCanica1_Z = 100.0f;
-movCanicaOffset = 1.0f;
+//Variables animación básica canica1 
+	movCanica1_X = 125.0f;
+	movCanica1_Z = 100.0f;
+	movCanicaOffset = 1.0f;
 
-recorrido1 = true;
-recorrido2 = false;
-recorrido3 = false;
-recorrido4 = false;
+	recorrido1 = true;
+	recorrido2 = false;
+	recorrido3 = false;
+	recorrido4 = false;
 
+//Variables animación por key frames canica2 
+	glm::vec3 posicionCanica2 = glm::vec3(0.0f, 0.0f, 0.0f);
 
+	KeyFrame[0].movCanica2_X = 0.0f;
+	KeyFrame[0].movCanica2_Z = 0.0f;
+
+	KeyFrame[1].movCanica2_X = -60.0f; //Se desplaza a la flor morada
+	KeyFrame[1].movCanica2_Z = -40.0f; 
+
+	KeyFrame[2].movCanica2_X = -10.0f; //Se desplaza a la flor azul
+	KeyFrame[2].movCanica2_Z = -82.0f; 
+
+	KeyFrame[3].movCanica2_X = -60.0f; //Se desplaza al hongo
+	KeyFrame[3].movCanica2_Z = -125.0f; 
+
+	KeyFrame[4].movCanica2_X = -10.0f; //Se desplaza a la flor azul de regreso
+	KeyFrame[4].movCanica2_Z = -82.0f;
+
+	KeyFrame[5].movCanica2_X = -60.0f; //Se desplaza a la flor morada de regreso
+	KeyFrame[5].movCanica2_Z = -40.0f;
+
+	KeyFrame[6].movCanica2_X = 0.0f; //Regresa a su posición inicial
+	KeyFrame[6].movCanica2_Z = 0.0f;
+
+	printf("\nTeclas para uso de Keyframes:\n1.-Presionar barra espaciadora para reproducir animacion.\n2.-Presionar 0 para volver a habilitar reproduccion de la animacion\n");
 
 	while (!mainWindow.getShouldClose())
 	{
@@ -474,24 +585,6 @@ recorrido4 = false;
 		shaderList[0].SetDirectionalLight(&mainLight);
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
-
-//Función para prender y apagar luces
-
-	//Prende y apagar luz puntual entre flippers
-		if (mainWindow.getLuzFlippers() == true) {
-			shaderList[0].SetPointLights(pointLights, pointLightCount);
-		}
-		else {
-			shaderList[0].SetPointLights(pointLights, pointLightCount - 2);
-		}
-
-	//Prende y apagar luz puntual entre flippers
-		if (mainWindow.getLuzTablero() == true) {
-			shaderList[0].SetSpotLights(spotLights, spotLightCount);
-		}
-		else {
-			shaderList[0].SetSpotLights(spotLights, spotLightCount - 2);
-		}
 
 //Se implemeta el cambio de la cámara
 		if (mainWindow.getcambiaCamara()) { //La tecla Z para la cámara isométrica
@@ -542,9 +635,10 @@ recorrido4 = false;
 		if (mainWindow.getAnimCanica1() == false) {
 			recorrido1 = true;
 		}
-
-		//
-			
+		 
+		//Animación key frames
+		inputKeyframes(mainWindow.getsKeys());
+		animate();
 
 		glm::mat4 model(1.0);
 		glm::mat4 modelaux(1.0);
@@ -697,7 +791,7 @@ recorrido4 = false;
 		flipper_M.RenderModel();
 		flipper_T.UseTexture();
 
-		//Dibujamos hongo1 con textura iluminada
+		//Dibujamos hongo1
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 120.0f, -40.0f));
 		model = glm::scale(model, glm::vec3(12.0f, 12.0f, 12.0f));
@@ -708,7 +802,7 @@ recorrido4 = false;
 		hongo1_M.RenderModel();
 
 
-		//Dibujamos obstaculo flor 1
+		//Dibujamos obstaculo flor 1 (Morada)
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 115.0f, 50.0f));
 		model = glm::scale(model, glm::vec3(100.0f, 100.0f, 100.0f));
@@ -718,7 +812,7 @@ recorrido4 = false;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		obstaculoFlor_M.RenderModel();
 
-		//Dibujamos obstaculo flor 2
+		//Dibujamos obstaculo flor 2 (Azul)
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(60.0f, 115.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(100.0f, 100.0f, 100.0f));
@@ -741,15 +835,14 @@ recorrido4 = false;
 		//Dibujamos canica 2 - Animación Key frames
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 85.0f));
-		//posCanica = glm::vec3(pos_X_Canica + movCanica_X, pos_Y_Canica, pos_Z_Canica + movCanica_Z);
-		//model = glm::translate(model, posCanica);
+		posicionCanica2 = glm::vec3(pos_X_Canica2 + movCanica2_X, pos_Y_Canica2, pos_Z_Canica2 + movCanica2_Z);
+		//model = glm::translate(model, glm::vec3(80.0f, 123.0f, 100.0f));
+		model = glm::translate(model, posicionCanica2);
 		modelaux = model;
-		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		canica2_T.UseTexture();
 		canica2_M.RenderModel();
-
-		
 
 		/*
 		model = modelaux;
@@ -783,4 +876,41 @@ recorrido4 = false;
 	}
 
 	return 0;
+}
+
+void inputKeyframes(bool* keys)
+{
+	if (keys[GLFW_KEY_SPACE])
+	{
+		if (iniciaAnimacion < 1)
+		{
+			if (play == false && (FrameIndex > 1))
+			{
+				resetElements();
+				//First Interpolation				
+				interpolation();
+				play = true;
+				playIndex = 0;
+				i_curr_steps = 0;
+				iniciaAnimacion++;
+				printf("\nPresiona la tecla 0 para habilitar reproducir de nuevo la animacion\n");
+				activaAnimacion = 0;
+
+			}
+			else
+			{
+				play = false;
+
+			}
+		}
+	}
+	if (keys[GLFW_KEY_0])
+	{
+		if (activaAnimacion < 1 && iniciaAnimacion > 0)
+		{
+			printf("\nYa puedes reproducir de nuevo la animacion con la tecla de barra espaciadora\n");
+			iniciaAnimacion = 0;
+
+		}
+	}
 }
