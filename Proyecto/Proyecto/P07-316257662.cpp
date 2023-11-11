@@ -41,21 +41,6 @@ std::vector<Shader> shaderList;
 Camera camera;
 Camera camera2;
 
-Texture brickTexture;
-Texture dirtTexture;
-Texture plainTexture;
-Texture pisoTexture;
-Texture AgaveTexture;
-//Nueva textura
-Texture lamparaTextura;
-
-Model Kitt_M;
-Model Llanta_M;
-Model Camino_M;
-Model Blackhawk_M;
-Model Dado_M;
-//Nuevo modelo
-Model lampara;
 
 //Modelos proyecto
 Model resorte_M;
@@ -65,6 +50,11 @@ Model obstaculoFlor_M;
 Model canica1_M;
 Model canica2_M;
 Model hongo1_M;
+
+Model baseVanta;
+Model vanta;
+Model puertaVanta1;
+Model puertaVanta2;
 
 //Texturas proyecto
 Texture resorte_T;
@@ -110,6 +100,7 @@ bool cambioTam_2;
 float movCanica1_X;
 float movCanica1_Z;
 float movCanicaOffset;
+float rotAspas = 0.0f;
 
 bool animCanica1;
 bool recorrido1;
@@ -244,24 +235,6 @@ int main()
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.3f, 0.5f);
 	camera2 = Camera(glm::vec3(200.0f, 400.0f, 300.0f), glm::vec3(0.0f, 1.0f, 0.0f), -120.0f, -30.0f, 25.0f, 0.5f);
 
-	brickTexture = Texture("Textures/brick.png");
-	brickTexture.LoadTextureA();
-	dirtTexture = Texture("Textures/dirt.png");
-	dirtTexture.LoadTextureA();
-	plainTexture = Texture("Textures/plain.png");
-	plainTexture.LoadTextureA();
-	pisoTexture = Texture("Textures/piso.tga");
-	pisoTexture.LoadTextureA();
-	AgaveTexture = Texture("Textures/Agave.tga");
-	AgaveTexture.LoadTextureA();
-
-
-	Kitt_M = Model();
-	Kitt_M.LoadModel("Models/kitt_optimizado.obj");
-	Llanta_M = Model();
-	Llanta_M.LoadModel("Models/llanta_optimizada.obj");
-	Blackhawk_M = Model();
-	Blackhawk_M.LoadModel("Models/uh60.obj");
 
 //Modelos proyecto
 	//Resorte
@@ -285,6 +258,20 @@ int main()
 	//Obstaculo iluminado hongo1
 	hongo1_M = Model();
 	hongo1_M.LoadModel("Models/Proyecto/Mushroom_1.obj");
+
+
+	//Obtaculo jerarquico base
+	baseVanta = Model();
+	baseVanta.LoadModel("Models/Proyecto/baseVanta.obj");
+	//Obtaculo jerarquico cuerpo
+	vanta = Model();
+	vanta.LoadModel("Models/Proyecto/vanta.obj");
+	//Obtaculo jerarquico puertas
+	puertaVanta1 = Model();
+	puertaVanta1.LoadModel("Models/Proyecto/puertaVanta.obj");
+
+	puertaVanta2 = Model();
+	puertaVanta2.LoadModel("Models/Proyecto/puertaVanta.obj");
 
 
 //Texturas proyecto
@@ -448,6 +435,7 @@ recorrido4 = false;
 		if (ciclos >= 10) {
 			dia = !(dia);
 			ciclos = 0;
+			rotAspas += 10.0f;
 		}
 		//SkyBox
 		if (dia) {
@@ -589,78 +577,12 @@ recorrido4 = false;
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 
 
-		/*
-		//Instancia del coche 
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f + mainWindow.getmuevex(), 0.5f, -3.0f));
-		modelaux = model;
-		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Kitt_M.RenderModel();
-		//Fijamos la luz al automovil para que este se mueva cuando el lo haga
-		spotLights[2].SetFlash(glm::vec3(mainWindow.getmuevex(), 0.5f, 0.0f), glm::vec3(-1.0, 0.0f, 0.0f));
-
-		//Llanta delantera izquierda
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(7.0f, -0.5f, 8.0f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
-		color = glm::vec3(0.5f, 0.5f, 0.5f);//llanta con color gris
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Llanta_M.RenderModel();
-
-		//Llanta trasera izquierda
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(15.5f, -0.5f, 8.0f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Llanta_M.RenderModel();
-
-		//Llanta delantera derecha
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(7.0f, -0.5f, 1.5f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Llanta_M.RenderModel();
-
-		//Llanta trasera derecha
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(15.5f, -0.5f, 1.5f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Llanta_M.RenderModel();
-	
-//Helicoptero
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f + mainWindow.getmuevexH(), 5.0f, 6.0));
-		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Blackhawk_M.RenderModel();
-		//Fijamos luz del helicoptero
-		spotLights[1].SetFlash(glm::vec3(mainWindow.getmuevexH(), 0.5f, 6.0f), glm::vec3(0.0, -1.0f, 0.0f));
-
-//Dibujamos la lampara 
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-20.0f, -1.0f, 30.0f));
-		modelaux = model;
-		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		lampara.RenderModel();
-		lamparaTextura.UseTexture();
-*/
 //Resorte
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(125.0f, 132.0f, 145.0f));
 		model = glm::rotate(model, 270 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 		modelaux = model;
-		model = glm::scale(model, glm::vec3(15.05f, 15.05f, 15.05f));
+		model = glm::scale(model, glm::vec3(13.05f, 13.05f, 13.05f));
 
 //Animación resorte
 		if (mainWindow.getAnimResorte() == true) {
@@ -716,10 +638,10 @@ recorrido4 = false;
 		flipper_M.RenderModel();
 		flipper_T.UseTexture();
 
-		//Dibujamos filper sup der
+		//Dibujamos filper sup izq
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(85.0f, 123.0f, -40.0f));
-		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::translate(model, glm::vec3(-57.0f, 123.0f, -30.0f));
+		model = glm::rotate(model, toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 		model = glm::rotate(model, mainWindow.getMovFlipIzq2() * toRadians, glm::vec3(0.0f, 0.1f, 0.0f));
 		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -749,7 +671,7 @@ recorrido4 = false;
 
 		//Dibujamos obstaculo flor 2
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(60.0f, 115.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(20.0f, 115.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(100.0f, 100.0f, 100.0f));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		color = glm::vec3(0.0f, 1.0f, 1.0f);
@@ -762,7 +684,7 @@ recorrido4 = false;
 		model = glm::translate(model, glm::vec3(movCanica1_X, 122.0f, movCanica1_Z));
 		//model = glm::translate(model, glm::vec3(125.0f, 122.0f, 100.0f));
 		modelaux = model;
-		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		canica1_T.UseTexture();
 		canica1_M.RenderModel();
@@ -778,7 +700,106 @@ recorrido4 = false;
 		canica2_T.UseTexture();
 		canica2_M.RenderModel();
 
+
+		//INSTANCIA 1 DEL OBJETO JERARQUICO
+
+		//Dibujamos obstaculo jerarquico base (hexagono)
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(45.0f, 123.0f, 50.0f));
+		model = glm::scale(model, glm::vec3(25.0f, 25.0f, 25.0f));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		baseVanta.RenderModel();
+
+
+		modelaux = model;
+
+		//Dibujamos obstaculo jerarquico aspas
 		
+		model = glm::rotate(model, glm::radians(30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(rotAspas), glm::vec3(0.0f, 1.0f, 0.0f));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess); 
+		color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		vanta.RenderModel();
+
+
+		model = modelaux;
+
+		//Dibujamos obstaculo jerarquico puerta1
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.82f));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		puertaVanta1.RenderModel();
+
+		model = modelaux;
+
+		//Dibujamos obstaculo jerarquico puerta2
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -0.82f));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		puertaVanta2.RenderModel();
+
+
+		//INSTANCIA 2 DEL OBJETO JERARQUICO
+		
+		//Dibujamos obstaculo jerarquico base (hexagono)
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(75.0f, 123.0f, -15.0f));
+		model = glm::scale(model, glm::vec3(25.0f, 25.0f, 25.0f));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		baseVanta.RenderModel();
+
+
+		modelaux = model;
+
+		//Dibujamos obstaculo jerarquico aspas
+
+		model = glm::rotate(model, glm::radians(30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(rotAspas), glm::vec3(0.0f, 1.0f, 0.0f));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		vanta.RenderModel();
+
+
+		model = modelaux;
+
+		//Dibujamos obstaculo jerarquico puerta1
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.82f));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		puertaVanta1.RenderModel();
+
+		model = modelaux;
+
+		//Dibujamos obstaculo jerarquico puerta2
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -0.82f));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		puertaVanta2.RenderModel();
+
+
+
 
 		/*
 		model = modelaux;
