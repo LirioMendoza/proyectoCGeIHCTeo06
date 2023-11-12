@@ -1,0 +1,68 @@
+newmtl blue
+illum 4
+Kd 0.00 0.00 0.00
+Ka 1.00 1.00 1.00
+Tf 1.00 1.00 1.00
+Ni 1.45
+Ks 0.50 0.50 0.50
+Ns 90.00
+map_Kd Melody/dark blue Base Color.png
+illum 4
+
+Kd 0.00 0.00 0.00
+Ka 1.00 1.00 1.00
+Tf 1.00 1.00 1.00
+Ni 1.45
+Ks 0.50 0.50 0.50
+Ns 902.50
+map_Kd Melody/blue Base Color.png
+
+newmtl dress
+illum 4
+Kd 0.00 0.00 0.00
+Ka 1.00 1.00 1.00
+Tf 1.00 1.00 1.00
+Ni 1.45
+Ks 0.50 0.50 0.50
+Ns 41.00
+map_Kd Melody/dark blue Base Color.png
+
+newmtl eyes
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.10 0.10 0.10
+Tf 1.00 1.00 1.00
+Ni 1.45
+Ks 0.50 0.50 0.50
+Ns 727.36
+map_Kd Melody/eyes Base Color.png
+
+newmtl nose
+illum 4
+Kd 0.00 0.00 0.00
+Ka 1.00 1.00 1.00
+Tf 1.00 1.00 1.00
+Ni 1.45
+Ks 0.50 0.50 0.50
+Ns 437.82
+map_Kd Melody/nose Base Color.png
+
+newmtl pink_ears
+illum 4
+Kd 0.00 0.00 0.00
+Ka 1.00 1.00 1.00
+Tf 1.00 1.00 1.00
+Ni 1.45
+Ks 0.50 0.50 0.50
+Ns 250.00
+map_Kd Melody/pink ears Base Color.png
+
+newmtl white
+illum 4
+Kd 0.00 0.00 0.00
+Ka 1.00 1.00 1.00
+Tf 1.00 1.00 1.00
+Ni 1.45
+Ks 0.50 0.50 0.50
+Ns 250.00
+map_Kd Melody/Hat color.png
