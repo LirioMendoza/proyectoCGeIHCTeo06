@@ -533,7 +533,7 @@ int main()
 	unsigned int spotLightCount = 0;
 	//Linterna personaje
 	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
-		0.8f, 4.0f,
+		0.2f, 0.2f,
 		0.0f, 0.0f, 0.0f, //Posición de la luz
 		0.0f, -1.0f, 0.0f,
 		1.0f, 0.0f, 0.0f,
@@ -884,26 +884,6 @@ int main()
 		hongo1_T1.UseTexture();
 		//hongo1_T2.UseTexture();
 		hongo1_M.RenderModel();
-
-//Dibujamos obstaculo flor 1 (Morada)
-		/*model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 115.0f, 50.0f));
-		model = glm::scale(model, glm::vec3(100.0f, 100.0f, 100.0f));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		obstaculoFlor_M.RenderModel();
-
-//Dibujamos obstaculo flor 2 (Azul)
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(60.0f, 115.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(100.0f, 100.0f, 100.0f));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		color = glm::vec3(0.0f, 1.0f, 1.0f);
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		obstaculoFlor_M.RenderModel(); */
 
 //Dibujamos canica 1 - Animación básica
 		model = glm::mat4(1.0);
