@@ -72,6 +72,7 @@ Texture canica1_T;
 Texture canica2_T;
 Texture hongo1_T1;
 Texture hongo1_T2;
+Texture piramide_T;
 
 Skybox skybox;
 
@@ -132,6 +133,10 @@ float movCanica2_Z = 0;
 #define MAX_FRAMES 100
 int i_max_steps = 90;
 int i_curr_steps = 7;
+
+//Variables animación piramide
+float rot_piramide;
+float rot_piramide_Offset;
 
 typedef struct _frame
 {
@@ -314,7 +319,37 @@ void CreateShaders()
 	shaderList.push_back(*shader1);
 }
 
+void Crear_piramide()
+{
+	unsigned int piramide_indices[] = {
+	   0, 1, 2,
+	   3, 4, 5,
+	   6, 7, 8,
 
+	};
+
+	GLfloat vertices_piramide[] = {
+		// Cara base			 S       T			NX       NY       NZ     
+		 0.0f, 0.0f, 0.0f,		0.5f,  0.66f,		0.0f,	1.0f,	0.0f,
+		1.0f, 0.0f, 0.0f,		0.33f,  0.33f,		0.0f,	1.0f,	0.0f,
+		 0.5f, 1.0f, 0.0f,		0.66f,  0.33f,		0.0f,	1.0f,	0.0f,
+
+		// Cara frontal
+		 0.0f, 0.0f, 0.0f,		0.8f,  0.66f,		0.0f,   1.0f,   0.0f,
+		 0.5f, 1.0f, 0.0f,		0.66f,  0.33f,		0.0f,   1.0f,   0.0f,
+		0.5f, 0.0f, 1.0f,		1.0f,  0.33f,		0.0f,   1.0f,   0.0f,
+
+		// Cara superior
+		 1.0f, 0.0f, 0.0f,		0.2f,  0.66f,		0.0f,   0.0f,   1.0f,
+		0.5f, 1.0f, 0.0f,		0.0f,  0.33f,		0.0f,   0.0f,   1.0f,
+		 0.5f, 0.0f, 1.0f,		0.33f,  0.33f,		0.0f,   0.0f,   1.0f,
+	};
+
+	Mesh* piramide = new Mesh();
+	piramide->CreateMesh(vertices_piramide, piramide_indices, 72, 9); //24 X 3 
+	meshList.push_back(piramide);
+
+}
 
 int main()
 {
@@ -323,6 +358,7 @@ int main()
 
 	CreateObjects();
 	CreateShaders();
+	Crear_piramide();
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.3f, 0.5f);
 	camera2 = Camera(glm::vec3(200.0f, 400.0f, 300.0f), glm::vec3(0.0f, 1.0f, 0.0f), -120.0f, -30.0f, 25.0f, 0.5f);
@@ -401,9 +437,9 @@ int main()
 	//Obstaculo iluminado hongo1
 	hongo1_T1 = Texture("Textures/Mushroom_1_BaseColor.jpg");
 	hongo1_T1.LoadTextureA();
-
-	hongo1_T2 = Texture("Textures/Mushroom_1_BaseColor.jpg");
-	hongo1_T2.LoadTextureA();
+	//Piramide por codigo
+	piramide_T = Texture("Textures/text_piramide.jpg");
+	piramide_T.LoadTextureA();
 
 
 	std::vector<std::string> skyboxFaces;
@@ -461,52 +497,15 @@ int main()
 		50.0f); //Ángulo - Ampliación de diametro
 	spotLightCount++;
 
-	/*
-	spotLights[1] = SpotLight(0.0f, 0.0f, 1.0f, //Color de luz AZUL
-		1.0f, 0.0f,
-		0.0f, 0.0f, 0.0f,
-		0.0f, 0.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		20.0f); //Ángulo - Ampliación de diametro
-	spotLightCount++;
-	*/
-
-	/*//luz fija - Luz verde
-	spotLights[1] = SpotLight(0.0f, 1.0f, 0.0f,
-		1.0f, 2.0f,
-		5.0f, 10.0f, 0.0f, 
-		0.0f, -5.0f, 0.0f,
-		1.0f, 0.0f, 0.0f, //SE DEBE DE MOVER LA EL PREVIO
-		15.0f); //Ángulo - Ampliación de diametro
-	spotLightCount++;
-	
-//se crean mas luces puntuales y spotlight 
-	//luz fija - Luz verde
-	spotLights[1] = SpotLight(0.0f, 1.0f, 0.0f,
-		1.0f, 2.0f,
-		5.0f, 10.0f, 0.0f,
-		0.0f, -5.0f, 0.0f,
-		1.0f, 0.0f, 0.0f, //SE DEBE DE MOVER LA EL PREVIO
-		15.0f); //Ángulo - Ampliación de diametro
-	spotLightCount++;*/
-
-
-
-/*
-//Spotlight del faro del carro
-	spotLights[2] = SpotLight(0.0f, 0.0f, 1.0f, //Color de luz AZUL
-		1.0f, 0.0f,
-		0.0f, 0.0f, 0.0f,
-		0.0f, 0.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		20.0f); //Ángulo - Ampliación de diametro
-	spotLightCount++; */
-
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0;
 	GLuint uniformColor = 0;
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
 	////Loop mientras no se cierra la ventana
+
+//Variables animación piramide
+	rot_piramide = 0.0f;
+	rot_piramide_Offset = 5.0f; //Velocidad de giro de la piramide
 
 //Variables animación básica canica1 
 	movCanica1_X = 125.0f;
@@ -636,6 +635,9 @@ int main()
 			recorrido1 = true;
 		}
 		 
+		//Animación piramide
+		rot_piramide += rot_piramide_Offset * deltaTime;
+
 		//Animación key frames
 		inputKeyframes(mainWindow.getsKeys());
 		animate();
@@ -654,72 +656,25 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 
 		meshList[2]->RenderMesh();
-		/*
-		//Instancia del coche 
+
+//Piramide por código 1
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f + mainWindow.getmuevex(), 0.5f, -3.0f));
-		modelaux = model;
-		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Kitt_M.RenderModel();
-		//Fijamos la luz al automovil para que este se mueva cuando el lo haga
-		spotLights[2].SetFlash(glm::vec3(mainWindow.getmuevex(), 0.5f, 0.0f), glm::vec3(-1.0, 0.0f, 0.0f));
-
-		//Llanta delantera izquierda
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(7.0f, -0.5f, 8.0f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
-		color = glm::vec3(0.5f, 0.5f, 0.5f);//llanta con color gris
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Llanta_M.RenderModel();
-
-		//Llanta trasera izquierda
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(15.5f, -0.5f, 8.0f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Llanta_M.RenderModel();
-
-		//Llanta delantera derecha
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(7.0f, -0.5f, 1.5f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Llanta_M.RenderModel();
-
-		//Llanta trasera derecha
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(15.5f, -0.5f, 1.5f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Llanta_M.RenderModel();
-	
-//Helicoptero
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f + mainWindow.getmuevexH(), 5.0f, 6.0));
-		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Blackhawk_M.RenderModel();
-		//Fijamos luz del helicoptero
-		spotLights[1].SetFlash(glm::vec3(mainWindow.getmuevexH(), 0.5f, 6.0f), glm::vec3(0.0, -1.0f, 0.0f));
-
-//Dibujamos la lampara 
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-20.0f, -1.0f, 30.0f));
-		modelaux = model;
+		model = glm::translate(model, glm::vec3(-1.5f, 119.f, -2.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, rot_piramide * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		lampara.RenderModel();
-		lamparaTextura.UseTexture();
-*/
+		piramide_T.UseTexture();
+		meshList[4]->RenderMesh();
+
+//Piramide por código 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(80.0f, 119.f, 50.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, rot_piramide * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		piramide_T.UseTexture();
+		meshList[4]->RenderMesh();
+
 //Resorte
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(125.0f, 132.0f, 145.0f));
@@ -791,7 +746,7 @@ int main()
 		flipper_M.RenderModel();
 		flipper_T.UseTexture();
 
-		//Dibujamos hongo1
+//Dibujamos hongo1
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 120.0f, -40.0f));
 		model = glm::scale(model, glm::vec3(12.0f, 12.0f, 12.0f));
@@ -802,7 +757,7 @@ int main()
 		hongo1_M.RenderModel();
 
 
-		//Dibujamos obstaculo flor 1 (Morada)
+//Dibujamos obstaculo flor 1 (Morada)
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 115.0f, 50.0f));
 		model = glm::scale(model, glm::vec3(100.0f, 100.0f, 100.0f));
@@ -812,7 +767,7 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		obstaculoFlor_M.RenderModel();
 
-		//Dibujamos obstaculo flor 2 (Azul)
+//Dibujamos obstaculo flor 2 (Azul)
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(60.0f, 115.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(100.0f, 100.0f, 100.0f));
@@ -822,53 +777,25 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		obstaculoFlor_M.RenderModel();
 
-		//Dibujamos canica 1 - Animación básica
+//Dibujamos canica 1 - Animación básica
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(movCanica1_X, 122.0f, movCanica1_Z));
-		//model = glm::translate(model, glm::vec3(125.0f, 122.0f, 100.0f));
 		modelaux = model;
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		canica1_T.UseTexture();
 		canica1_M.RenderModel();
 
-		//Dibujamos canica 2 - Animación Key frames
+//Dibujamos canica 2 - Animación Key frames
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 85.0f));
 		posicionCanica2 = glm::vec3(pos_X_Canica2 + movCanica2_X, pos_Y_Canica2, pos_Z_Canica2 + movCanica2_Z);
-		//model = glm::translate(model, glm::vec3(80.0f, 123.0f, 100.0f));
 		model = glm::translate(model, posicionCanica2);
 		modelaux = model;
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		canica2_T.UseTexture();
 		canica2_M.RenderModel();
-
-		/*
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(0.2f, 5.4f, -1.7f));
-		model = glm::rotate(model, glm::radians(mainWindow.getangulo_pdelizq()), glm::vec3(0.0f, 0.1f, 0.1f));
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		color = glm::vec3(1.0f, 0.0f, 1.0f);
-		PDELIZQ_M.RenderModel();
-		*/
-
-		/*
-		//Agave 
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 1.0f, -4.0f));
-		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		
-		//blending: transparencia o traslucidez
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		AgaveTexture.UseTexture();
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		meshList[3]->RenderMesh();
-		glDisable(GL_BLEND);
-		*/
 
 		glUseProgram(0);
 
