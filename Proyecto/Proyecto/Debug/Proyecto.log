@@ -1,0 +1,11 @@
+﻿  main.cpp
+C:\Users\aketz\OneDrive\Imágenes\Escritorio\CGeIHC\proyectoCGeIHCTeo06\Proyecto\Proyecto\Window.h(12,36): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
+C:\Users\aketz\OneDrive\Imágenes\Escritorio\CGeIHC\proyectoCGeIHCTeo06\Proyecto\Proyecto\Window.h(13,37): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
+C:\Users\aketz\OneDrive\Imágenes\Escritorio\CGeIHC\proyectoCGeIHCTeo06\Proyecto\Proyecto\Window.h(21,37): warning C4244: 'return': conversión de 'GLfloat' a 'GLboolean'; posible pérdida de datos
+C:\Users\aketz\OneDrive\Imágenes\Escritorio\CGeIHC\proyectoCGeIHCTeo06\Proyecto\Proyecto\Window.h(23,37): warning C4244: 'return': conversión de 'GLfloat' a 'GLboolean'; posible pérdida de datos
+C:\Users\aketz\OneDrive\Imágenes\Escritorio\CGeIHC\proyectoCGeIHCTeo06\Proyecto\Proyecto\Window.h(25,38): warning C4244: 'return': conversión de 'GLfloat' a 'GLboolean'; posible pérdida de datos
+C:\Users\aketz\OneDrive\Imágenes\Escritorio\CGeIHC\proyectoCGeIHCTeo06\Proyecto\Proyecto\main.cpp(605,15): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\aketz\OneDrive\Imágenes\Escritorio\CGeIHC\proyectoCGeIHCTeo06\Proyecto\Proyecto\main.cpp(607,33): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\aketz\OneDrive\Imágenes\Escritorio\CGeIHC\proyectoCGeIHCTeo06\Proyecto\Proyecto\main.cpp(732,38): warning C4805: '==': combinación no segura del tipo 'GLboolean' y el tipo 'bool' en la operación
+C:\Users\aketz\OneDrive\Imágenes\Escritorio\CGeIHC\proyectoCGeIHCTeo06\Proyecto\Proyecto\main.cpp(805,38): warning C4805: '==': combinación no segura del tipo 'GLboolean' y el tipo 'bool' en la operación
+  Proyecto.vcxproj -> C:\Users\aketz\OneDrive\Imágenes\Escritorio\CGeIHC\proyectoCGeIHCTeo06\Proyecto\Debug\Proyecto.exe
