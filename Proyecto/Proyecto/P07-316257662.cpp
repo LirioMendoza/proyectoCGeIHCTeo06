@@ -420,7 +420,7 @@ int main()
 
 	//Personaje
 	melody = Model();
-	melody.LoadModel("Models/Proyecto/melody.obj");
+	melody.LoadModel("Models/Melody/melody.obj");
 
   //Obstáculos
 	luna1 = Model();
@@ -472,8 +472,8 @@ int main()
 	vantaCuerpo_T = Texture("Textures/Vanta/vanta_Base_Color.jpg");
 	vantaCuerpo_T.LoadTextureA();
 
-	//vantapuerta_T = Texture("Textures/Vanta/puerta_Base_Color.jpg");
-	//vantapuerta_T.LoadTextureA();
+	vantapuerta_T = Texture("Textures/Vanta/puerta_Base_Color.jpg");
+	vantapuerta_T.LoadTextureA();
 	
 
 	//Textura lunitas
@@ -534,7 +534,7 @@ int main()
 	//Linterna personaje
 	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
 		0.8f, 4.0f,
-		0.0f, 0.0f, 0.0f, //Posici�n de la luz
+		0.0f, 0.0f, 0.0f, //Posición de la luz
 		0.0f, -1.0f, 0.0f,
 		1.0f, 0.0f, 0.0f,
 		10.0f);
@@ -775,17 +775,6 @@ int main()
 		glm::mat4 modelaux(1.0);
 		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(30.0f, 1.0f, 30.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-
-		pisoTexture.UseTexture();
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
-
-		meshList[2]->RenderMesh();
-
 //Piramide por código 1
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-1.5f, 119.f, -2.0f));
@@ -832,7 +821,7 @@ int main()
 
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		resorte_M.RenderModel();
-		resorte_T.UseTexture();
+		//resorte_T.UseTexture();
 
 //Dibujamos tablero
 		model = glm::mat4(1.0);
@@ -840,6 +829,8 @@ int main()
 		modelaux = model;
 		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		color = glm::vec3(1.0f, 1.0f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		maquina_M.RenderModel();
 		maquina_T.UseTexture();
@@ -852,6 +843,8 @@ int main()
 		model = glm::rotate(model, 180 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::rotate(model, mainWindow.getMovFlipDer() * toRadians, glm::vec3(0.0f, 0.1f, 0.0f));
 		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
+		color = glm::vec3(1.0f, 1.0f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		flipper_M.RenderModel();
 		flipper_T.UseTexture();
@@ -862,6 +855,8 @@ int main()
 		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 		model = glm::rotate(model, mainWindow.getMovFlipIzq() * toRadians, glm::vec3(0.0f, 0.1f, 0.0f));
 		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
+		color = glm::vec3(1.0f, 1.0f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		flipper_M.RenderModel();
 		flipper_T.UseTexture();
@@ -872,6 +867,8 @@ int main()
 		model = glm::rotate(model, toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 		model = glm::rotate(model, mainWindow.getMovFlipIzq2() * toRadians, glm::vec3(0.0f, 0.1f, 0.0f));
 		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
+		color = glm::vec3(1.0f, 1.0f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		flipper_M.RenderModel();
 		flipper_T.UseTexture();
@@ -881,6 +878,8 @@ int main()
 		model = glm::translate(model, glm::vec3(0.0f, 120.0f, -40.0f));
 		model = glm::scale(model, glm::vec3(12.0f, 12.0f, 12.0f));
 		modelaux = model;
+		color = glm::vec3(1.0f, 1.0f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		hongo1_T1.UseTexture();
 		//hongo1_T2.UseTexture();
@@ -911,6 +910,8 @@ int main()
 		model = glm::translate(model, glm::vec3(movCanica1_X, 122.0f, movCanica1_Z));
 		modelaux = model;
 		model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
+		color = glm::vec3(1.0f, 1.0f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		canica1_T.UseTexture();
 		canica1_M.RenderModel();
@@ -922,6 +923,8 @@ int main()
 		model = glm::translate(model, posicionCanica2);
 		modelaux = model;
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		color = glm::vec3(1.0f, 1.0f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		canica2_T.UseTexture();
 		canica2_M.RenderModel();
