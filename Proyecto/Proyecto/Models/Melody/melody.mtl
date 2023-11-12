@@ -7,7 +7,7 @@ Ka 1.000000 1.000000 1.000000
 Kd 0.119893 0.314776 0.577581
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
-map_Kd blue Base Color.png
+map_Kd Melody/blue Base Color.png
 Ni 1.450000
 d 1.000000
 illum 2
@@ -18,7 +18,7 @@ Ka 1.000000 1.000000 1.000000
 Kd 0.048414 0.224512 0.495847
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
-map_Kd dark blue Base Color.png
+map_Kd Melody/dark blue Base Color.png
 Ni 1.450000
 d 1.000000
 illum 2
@@ -29,7 +29,7 @@ Ka 1.000000 1.000000 1.000000
 Kd 0.528998 0.754367 0.800000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
-map_Kd dark blue Base Color.png
+map_Kd Melody/dark blue Base Color.png
 Ni 1.450000
 d 1.000000
 illum 2
@@ -40,7 +40,7 @@ Ka 0.100000 0.100000 0.100000
 Kd 0.039421 0.020544 0.011440
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
-map_Kd eyes Base Color.png
+map_Kd Melody/eyes Base Color.png
 Ni 1.450000
 d 1.000000
 illum 3
@@ -51,7 +51,7 @@ Ka 1.000000 1.000000 1.000000
 Kd 1.000000 0.797135 0.167472
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
-map_Kd nose Base Color.png
+map_Kd Melody/nose Base Color.png
 Ni 1.450000
 d 1.000000
 illum 2
@@ -62,7 +62,7 @@ Ka 1.000000 1.000000 1.000000
 Kd 0.887923 0.381326 0.491021
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
-map_Kd pink ears Base Color.png
+map_Kd Melody/pink ears Base Color.png
 Ni 1.450000
 d 1.000000
 illum 2
@@ -73,7 +73,7 @@ Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
-map_Kd Hat color.png
+map_Kd Melody/Hat color.png
 Ni 1.450000
 d 1.000000
 illum 2

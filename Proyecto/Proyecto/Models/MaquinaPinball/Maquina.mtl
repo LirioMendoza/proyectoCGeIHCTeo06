@@ -9,7 +9,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd RosaPastel.jpg
+map_Kd Pinball/RosaPastel.jpg
 
 newmtl Material.005
 Ns 250.000000
@@ -19,7 +19,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd RosaPastel.jpg
+map_Kd Pinball/RosaPastel.jpg
 
 newmtl Material.006
 Ns 250.000000
@@ -29,7 +29,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd RosaPastel.jpg
+map_Kd Pinball/RosaPastel.jpg
 
 newmtl Material.007
 Ns 250.000000
@@ -39,7 +39,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd RosaPastel.jpg
+map_Kd Pinball/RosaPastel.jpg
 
 newmtl Material.008
 Ns 250.000000
@@ -49,7 +49,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd Azul_Rosa.jpg
+map_Kd Pinball/Azul_Rosa.jpg
 
 newmtl Material.009
 Ns 250.000000
@@ -59,7 +59,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd Azul_Rosa.jpg
+map_Kd Pinball/Azul_Rosa.jpg
 
 newmtl Material.010
 Ns 250.000000
@@ -69,7 +69,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd Azul_Rosa.jpg
+map_Kd Pinball/Azul_Rosa.jpg
 
 newmtl Material.011
 Ns 250.000000
@@ -79,7 +79,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd Azul_Rosa.jpg
+map_Kd Pinball/Azul_Rosa.jpg
 
 newmtl Material.012
 Ns 250.000000
@@ -99,7 +99,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd Fondo.jpg
+map_Kd Pinball/Fondo.jpg
 
 newmtl Material.017
 Ns 250.000000
@@ -109,7 +109,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd RosaPastel.jpg
+map_Kd Pinball/RosaPastel.jpg
 
 newmtl Material.018
 Ns 250.000000
@@ -129,7 +129,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd Metal.jpg
+map_Kd Pinball/Metal.jpg
 
 newmtl Material.020
 Ns 250.000000
@@ -139,7 +139,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd Negro.jpg
+map_Kd Pinball/Negro.jpg
 
 newmtl Material.025
 Ns 250.000000
@@ -149,7 +149,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd RosaOscuro.jpg
+map_Kd Pinball/RosaOscuro.jpg
 
 newmtl Material.027
 Ns 250.000000
@@ -159,7 +159,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd RosaOscuro.jpg
+map_Kd Pinball/RosaOscuro.jpg
 
 newmtl Material.028
 Ns 250.000000
@@ -169,7 +169,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd RosaOscuro.jpg
+map_Kd Pinball/RosaOscuro.jpg
 
 newmtl Material.029
 Ns 250.000000
@@ -179,4 +179,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd Melody.jpg
+map_Kd Pinball/Melody.jpg
