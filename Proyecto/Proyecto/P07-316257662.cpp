@@ -56,6 +56,9 @@ Model vanta;
 Model puertaVanta1;
 Model puertaVanta2;
 
+Model luna1;
+Model luna2;
+
 //Texturas proyecto
 Texture resorte_T;
 Texture maquina_T;
@@ -64,6 +67,12 @@ Texture canica1_T;
 Texture canica2_T;
 Texture hongo1_T1;
 Texture hongo1_T2;
+
+Texture vantaBase_T;
+Texture vantaCuerpo_T;
+Texture vantapuerta_T;
+Texture luna_T;
+
 
 Skybox skybox;
 
@@ -236,78 +245,95 @@ int main()
 	camera2 = Camera(glm::vec3(200.0f, 400.0f, 300.0f), glm::vec3(0.0f, 1.0f, 0.0f), -120.0f, -30.0f, 25.0f, 0.5f);
 
 
-//Modelos proyecto
-	//Resorte
+	//Modelos proyecto
+		//Resorte
 	resorte_M = Model();
-	resorte_M.LoadModel("Models/Proyecto/Resorte.obj");
+	resorte_M.LoadModel("Models/Resorte/Resorte.obj");
 	//Maquina
 	maquina_M = Model();
-	maquina_M.LoadModel("Models/Proyecto/Maquina.obj");
+	maquina_M.LoadModel("Models/MaquinaPinball/Maquina.obj");
 	//Flipper
 	flipper_M = Model();
-	flipper_M.LoadModel("Models/Proyecto/Flipper.obj");
+	flipper_M.LoadModel("Models/Flipper/Flipper.obj");
 	//Obstaculo flor
 	obstaculoFlor_M = Model();
-	obstaculoFlor_M.LoadModel("Models/Proyecto/cartoon_flower.obj");
+	obstaculoFlor_M.LoadModel("Models/Flower/cartoon_flower.obj");
 	//Canica1
 	canica1_M = Model();
-	canica1_M.LoadModel("Models/Proyecto/Canica1.obj");
+	canica1_M.LoadModel("Models/Canicas/Canica1.obj");
 	//Canica2
 	canica2_M = Model();
-	canica2_M.LoadModel("Models/Proyecto/Canica2.obj");
+	canica2_M.LoadModel("Models/Canicas/Canica2.obj");
 	//Obstaculo iluminado hongo1
 	hongo1_M = Model();
-	hongo1_M.LoadModel("Models/Proyecto/Mushroom_1.obj");
+	hongo1_M.LoadModel("Models/Mushroom/Mushroom_1.obj");
 
 
 	//Obtaculo jerarquico base
 	baseVanta = Model();
-	baseVanta.LoadModel("Models/Proyecto/baseVanta.obj");
+	baseVanta.LoadModel("Models/Vanta/baseVanta.obj");
 	//Obtaculo jerarquico cuerpo
 	vanta = Model();
-	vanta.LoadModel("Models/Proyecto/vanta.obj");
+	vanta.LoadModel("Models/Vanta/vanta.obj");
 	//Obtaculo jerarquico puertas
 	puertaVanta1 = Model();
-	puertaVanta1.LoadModel("Models/Proyecto/puertaVanta.obj");
+	puertaVanta1.LoadModel("Models/Vanta/puertaVanta.obj");
 
 	puertaVanta2 = Model();
-	puertaVanta2.LoadModel("Models/Proyecto/puertaVanta.obj");
+	puertaVanta2.LoadModel("Models/Vanta/puertaVanta.obj");
 
+	luna1 = Model();
+	luna1.LoadModel("Models/Luna/Luna.obj");
+	
+	luna2 = Model();
+	luna2.LoadModel("Models/Luna/Luna.obj");
 
-//Texturas proyecto
-	//Resorte
-	resorte_T = Texture("Textures/Metal.jpg");
+	//Texturas proyecto
+		//Resorte
+	resorte_T = Texture("Textures/Resorte/Metal.jpg");
 	resorte_T.LoadTextureA();
 	//Maquina
-	maquina_T = Texture("Textures/Azul_Rosa.jpg");
+	maquina_T = Texture("Textures/Pinball/Azul_Rosa.jpg");
 	maquina_T.LoadTextureA();
-	maquina_T = Texture("Textures/Fondo.jpg");
+	maquina_T = Texture("Textures/Pinball/Fondo.jpg");
 	maquina_T.LoadTextureA();
-	maquina_T = Texture("Textures/Melody.jpg");
+	maquina_T = Texture("Textures/Pinball/Melody.jpg");
 	maquina_T.LoadTextureA();
-	maquina_T = Texture("Textures/Metal.jpg");
+	maquina_T = Texture("Textures/Resorte/Metal.jpg");
 	maquina_T.LoadTextureA();
-	maquina_T = Texture("Textures/Negro.jpg");
+	maquina_T = Texture("Textures/Pinball/Negro.jpg");
 	maquina_T.LoadTextureA();
-	maquina_T = Texture("Textures/RosaOscuro.jpg");
+	maquina_T = Texture("Textures/Pinball/RosaOscuro.jpg");
 	maquina_T.LoadTextureA();
-	maquina_T = Texture("Textures/RosaPastel.jpg");
+	maquina_T = Texture("Textures/Pinball/RosaPastel.jpg");
 	maquina_T.LoadTextureA();
 	//Flipper
-	flipper_T = Texture("Textures/MoradoOscuro.jpg");
+	flipper_T = Texture("Textures/Flipper/MoradoOscuro.jpg");
 	flipper_T.LoadTextureA();
 	//Canica1
-	canica1_T = Texture("Textures/Holo.jpg");
+	canica1_T = Texture("Textures/Canicas/Holo.jpg");
 	canica1_T.LoadTextureA();
 	//Canica1
-	canica2_T = Texture("Textures/Metal1.jpg");
+	canica2_T = Texture("Textures/Canicas/Metal1.jpg");
 	canica2_T.LoadTextureA();
 	//Obstaculo iluminado hongo1
-	hongo1_T1 = Texture("Textures/Mushroom_1_BaseColor.jpg");
+	hongo1_T1 = Texture("Textures/Mushroom/Mushroom_1_BaseColor.jpg");
 	hongo1_T1.LoadTextureA();
 
-	hongo1_T2 = Texture("Textures/Mushroom_1_BaseColor.jpg");
-	hongo1_T2.LoadTextureA();
+	//Texturas objeto jerarquico
+	vantaBase_T = Texture("Textures/Vanta/base_Base_Color.jpg");
+	vantaBase_T.LoadTextureA();
+
+	vantaCuerpo_T = Texture("Textures/Vanta/vanta_Base_Color.jpg");
+	vantaCuerpo_T.LoadTextureA();
+
+	//vantapuerta_T = Texture("Textures/Vanta/puerta_Base_Color.jpg");
+	//vantapuerta_T.LoadTextureA();
+	
+
+	//Textura lunitas
+	luna_T = Texture("Textures/Luna/Luna_Base_Color.jpg");
+	luna_T.LoadTextureA();
 
 
 	std::vector<std::string> skyboxFaces;
@@ -655,29 +681,29 @@ recorrido4 = false;
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		hongo1_T1.UseTexture();
-		hongo1_T2.UseTexture();
+		//hongo1_T2.UseTexture();
 		hongo1_M.RenderModel();
 
 
 		//Dibujamos obstaculo flor 1
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 115.0f, 50.0f));
-		model = glm::scale(model, glm::vec3(100.0f, 100.0f, 100.0f));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		obstaculoFlor_M.RenderModel();
+		//model = glm::mat4(1.0);
+		//model = glm::translate(model, glm::vec3(0.0f, 115.0f, 50.0f));
+		//model = glm::scale(model, glm::vec3(100.0f, 100.0f, 100.0f));
+		//Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		//color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
+		//glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		//obstaculoFlor_M.RenderModel();
 
-		//Dibujamos obstaculo flor 2
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(20.0f, 115.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(100.0f, 100.0f, 100.0f));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		color = glm::vec3(0.0f, 1.0f, 1.0f);
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		obstaculoFlor_M.RenderModel();
+		////Dibujamos obstaculo flor 2
+		//model = glm::mat4(1.0);
+		//model = glm::translate(model, glm::vec3(20.0f, 115.0f, 0.0f));
+		//model = glm::scale(model, glm::vec3(100.0f, 100.0f, 100.0f));
+		//Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		//color = glm::vec3(0.0f, 1.0f, 1.0f);
+		//glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		//obstaculoFlor_M.RenderModel();
 
 		//Dibujamos canica 1 - Animación básica
 		model = glm::mat4(1.0);
@@ -700,7 +726,7 @@ recorrido4 = false;
 		canica2_T.UseTexture();
 		canica2_M.RenderModel();
 
-
+//---------------------------------------------------------------//
 		//INSTANCIA 1 DEL OBJETO JERARQUICO
 
 		//Dibujamos obstaculo jerarquico base (hexagono)
@@ -708,23 +734,28 @@ recorrido4 = false;
 		model = glm::translate(model, glm::vec3(45.0f, 123.0f, 50.0f));
 		model = glm::scale(model, glm::vec3(25.0f, 25.0f, 25.0f));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
+		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		vantaBase_T.UseTexture();
 		baseVanta.RenderModel();
-
+		
+		
 
 		modelaux = model;
 
 		//Dibujamos obstaculo jerarquico aspas
-		
+		model = glm::scale(model, glm::vec3(0.8F,0.8f, 0.8f));
 		model = glm::rotate(model, glm::radians(30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::rotate(model, glm::radians(rotAspas), glm::vec3(0.0f, 1.0f, 0.0f));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess); 
-		color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
+		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		vantaCuerpo_T.UseTexture();
 		vanta.RenderModel();
+		
+		
 
 
 		model = modelaux;
@@ -733,10 +764,11 @@ recorrido4 = false;
 
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.82f));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
+		color = glm::vec3(0.0f, 0.0f, 0.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puertaVanta1.RenderModel();
+	/*	vantapuerta_T.UseTexture();*/
 
 		model = modelaux;
 
@@ -744,10 +776,11 @@ recorrido4 = false;
 
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -0.82f));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
+		color = glm::vec3(0.0f, 0.0f, 0.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puertaVanta2.RenderModel();
+		//vantapuerta_T.UseTexture();
 
 
 		//INSTANCIA 2 DEL OBJETO JERARQUICO
@@ -756,25 +789,28 @@ recorrido4 = false;
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(75.0f, 123.0f, -15.0f));
 		model = glm::scale(model, glm::vec3(25.0f, 25.0f, 25.0f));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
+		
+		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		vantaBase_T.UseTexture();
 		baseVanta.RenderModel();
+		
 
 
 		modelaux = model;
 
 		//Dibujamos obstaculo jerarquico aspas
-
+		model = glm::scale(model, glm::vec3(0.8F, 0.8f, 0.8f));
 		model = glm::rotate(model, glm::radians(30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::rotate(model, glm::radians(rotAspas), glm::vec3(0.0f, 1.0f, 0.0f));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
+		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		vantaCuerpo_T.UseTexture();
 		vanta.RenderModel();
-
+		
 
 		model = modelaux;
 
@@ -786,6 +822,7 @@ recorrido4 = false;
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puertaVanta1.RenderModel();
+		//vantapuerta_T.UseTexture();
 
 		model = modelaux;
 
@@ -797,8 +834,25 @@ recorrido4 = false;
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puertaVanta2.RenderModel();
+		//vantapuerta_T.UseTexture();
 
 
+
+		//Dibujamos luna
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(45.0f, 123.0f, -75.0f));
+		model = glm::scale(model, glm::vec3(20.0f, 20.0f, 20.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		luna1.RenderModel();
+		luna_T.UseTexture();
+
+		//Dibujamos luna
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-10.0f, 123.0f, 20.0f));
+		model = glm::scale(model, glm::vec3(20.0f, 20.0f, 20.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		luna1.RenderModel();
+		luna_T.UseTexture();
 
 
 		/*
