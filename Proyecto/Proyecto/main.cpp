@@ -499,7 +499,7 @@ int main()
 	unsigned int pointLightCount = 0;
 	
 	//Luz entre los flippers
-	pointLights[0] = PointLight(0.9176470588235294f, 0.792156862745098f, 0.09411764705882353f, //Incrementra índice
+	pointLights[0] = PointLight(0.9176470588235294f, 0.792156862745098f, 0.09411764705882353f, 
 		20.0f, 10.0f,
 		//+/-Intensidad de color   //+/- Radiante de color
 		45.0f, 130.0f, 120.0f, //Ubicación de la luz
@@ -669,9 +669,6 @@ int main()
 		else {
 			shaderList[0].SetDirectionalLight(&mainLight2);
 		}
-
-		//información al shader de fuentes de iluminación
-		shaderList[0].SetDirectionalLight(&mainLight);
 		
 	//Funciones para prender y apagar luces
     
@@ -984,8 +981,6 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		vantaBase_T.UseTexture();
 		baseVanta.RenderModel();
-		
-
 
 		modelaux = model;
 
