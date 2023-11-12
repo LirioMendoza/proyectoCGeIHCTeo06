@@ -13,8 +13,6 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 {
 	width = windowWidth;
 	height = windowHeight;
-	muevex = 2.0f;
-	muevexH = 2.0f;
 
 //Variables animación resorte
 	animResorte = false;
@@ -31,6 +29,19 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 
 //Animación básica canica 1
 	animCanica1 = false;
+
+//Variables movimiento personaje
+	movX = 0.0f;
+	movZ = 0.0f;
+
+//Estado luz flippers
+	estadoLuzFlipper = true;
+
+//Estado luz flippers
+	estadoLuzLinterna = true;
+
+	//Estado luz tablero
+	estadoLuzTablero = true;
 
 	for (size_t i = 0; i < 1024; i++)
 	{
@@ -130,16 +141,6 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 		theWindow-> muevex -= 1.0;
 	}
 
-//Movimiento helicoptero
-	if (key == GLFW_KEY_H)
-	{
-		theWindow->muevexH += 1.0;
-	}
-	if (key == GLFW_KEY_J)
-	{
-		theWindow->muevexH -= 1.0;
-	}
-
 //Movimiento Flipper der
 	if (key == GLFW_KEY_1)
 	{
@@ -181,16 +182,28 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 
 	}
 
-	//Movimiento Flipper izq superior
-	if (key == GLFW_KEY_5)
+//Movimiento personaje (eje Z)
+	if (key == GLFW_KEY_U)
 	{
-		if (theWindow->angFlip_Izq2 > 45.0f) {
-		}
-		else {
-			theWindow->angFlip_Izq2 += 10.0f;
-		}
-
+		theWindow->movZ -= 1.0f;
 	}
+
+	if (key == GLFW_KEY_J)
+	{
+		theWindow->movZ += 1.0f;
+	}
+
+//Movimiento personaje (eje x)
+	if (key == GLFW_KEY_H)
+	{
+		theWindow->movX -= 1.0f;
+	}
+
+	if (key == GLFW_KEY_K)
+	{
+		theWindow->movX += 1.0f;
+	}
+
 
 	if (key == GLFW_KEY_6)
 	{
@@ -200,6 +213,24 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 			theWindow->angFlip_Izq2 -= 10.0f;
 		}
 
+	}
+
+//Luz flippers
+	if (key == GLFW_KEY_Q && action == GLFW_PRESS)
+	{
+		theWindow->estadoLuzFlipper = !(theWindow->estadoLuzFlipper);
+	}
+
+	//Luz linterna
+	if (key == GLFW_KEY_E && action == GLFW_PRESS)
+	{
+		theWindow->estadoLuzLinterna = !(theWindow->estadoLuzLinterna);
+	}
+
+	//Luz tablero
+	if (key == GLFW_KEY_R && action == GLFW_PRESS)
+	{
+		theWindow->estadoLuzTablero = !(theWindow->estadoLuzTablero);
 	}
 
 //Cambio de cámara

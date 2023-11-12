@@ -13,8 +13,6 @@ public:
 	GLfloat getBufferHeight() { return bufferHeight; }
 	GLfloat getXChange();
 	GLfloat getYChange();
-	GLfloat getmuevex() { return muevex; }
-	GLfloat getmuevexH() { return muevexH; }
 
 //Animación resorte
 	GLboolean getAnimResorte() { return animResorte;  }
@@ -37,6 +35,13 @@ public:
 
 //Prendido y apagado luz tablero
 	GLboolean getLuzTablero() { return estadoLuzTablero; }
+
+	//Prendido y apagado luz linterna
+	GLboolean getLuzLinterna() { return estadoLuzLinterna; }
+
+//Movimiento personaje
+	GLfloat getMovX() { return movX; }
+	GLfloat getMovZ() { return movZ; }
 
 	bool getShouldClose() {
 		return  glfwWindowShouldClose(mainWindow);}
@@ -79,6 +84,12 @@ private:
 //Prendido y apagado luz tablero
 	GLboolean estadoLuzTablero; 
 
+	//Prendido y apagado luz linterna
+	GLboolean estadoLuzLinterna;
+
+//Variables movimiento personaje
+	GLfloat movX;
+	GLfloat movZ;
 
 	bool mouseFirstMoved;
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);

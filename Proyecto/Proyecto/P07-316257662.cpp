@@ -56,6 +56,8 @@ Model vanta;
 Model puertaVanta1;
 Model puertaVanta2;
 
+Model melody;
+
 //Texturas proyecto
 Texture resorte_T;
 Texture maquina_T;
@@ -78,11 +80,17 @@ GLfloat lastTime = 0.0f;
 static double limitFPS = 1.0 / 60.0;
 
 // luz direccional
-DirectionalLight mainLight;
+DirectionalLight mainLight; 
 DirectionalLight mainLight2;
-//para declarar varias luces de tipo pointlight
+
+//Luces de tipo pointlight
 PointLight pointLights[MAX_POINT_LIGHTS];
+PointLight pointLights2[MAX_POINT_LIGHTS];
+PointLight pointLights3[MAX_POINT_LIGHTS];
+
+//Luces de tipo spotlight
 SpotLight spotLights[MAX_SPOT_LIGHTS];
+SpotLight spotLights2[MAX_SPOT_LIGHTS];
 
 // Vertex Shader
 static const char* vShader = "shaders/shader_light.vert";
@@ -108,9 +116,13 @@ bool recorrido2;
 bool recorrido3;
 bool recorrido4;
 
-// Variables aux ilumnación cuarto
+// Variables aux iluminación cuarto
 bool dia = true;
 int ciclos = 0;
+
+//Variables contro de luces Objetos jerárquicos
+bool luzObJ1 = true;
+bool luzObJ2 = true;
 
 //función de calculo de normales por promedio de vértices 
 void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices, unsigned int verticeCount,
@@ -273,6 +285,10 @@ int main()
 	puertaVanta2 = Model();
 	puertaVanta2.LoadModel("Models/Proyecto/puertaVanta.obj");
 
+	//Personaje
+	melody = Model();
+	melody.LoadModel("Models/Proyecto/melody.obj");
+
 
 //Texturas proyecto
 	//Resorte
@@ -326,24 +342,41 @@ int main()
 
 	//contador de luces puntuales
 	unsigned int pointLightCount = 0;
-	//Declaración de primer luz puntual - Luz roja
-	pointLights[0] = PointLight(1.0f, 0.0f, 0.0f,
-		0.0f, 1.0f,
-		//+/-Intensidad de color   //+/- Radiante de color
-		-6.0f, 1.5f, 1.5f,
-		0.3f, 0.2f, 0.1f);
-	pointLightCount++;
-
-//Luz entre los flippers
-	pointLights[1] = PointLight(0.9176470588235294f, 0.792156862745098f, 0.09411764705882353f, //Incrementra índice
+	
+	//Luz entre los flippers
+	pointLights[0] = PointLight(0.9176470588235294f, 0.792156862745098f, 0.09411764705882353f, //Incrementra índice
 		20.0f, 10.0f,
 		//+/-Intensidad de color   //+/- Radiante de color
 		45.0f, 130.0f, 120.0f, //Ubicación de la luz
 		0.3f, 0.2f, 0.1f);
 	pointLightCount++;
 
+	//Luz objeto jerárquico 1
+	pointLights[1] = PointLight(0.0f, 1.0f, 1.5f,
+		1.0f, 1.0f,
+		45.0f, 130.0f, 50.0f,
+		0.0f, 0.0f, 0.01f);
+	pointLightCount++;
+
+	//Luz objeto jerárquico 2
+	pointLights[2] = PointLight(0.0f, 1.0f, 1.5f,
+		1.0f, 1.0f,
+		75.0f, 130.0f, -15.0f,
+		0.0f, 0.0f, 0.01f);
+	pointLightCount++;
+
+	//Segundo arreglo luz puntual 
+	pointLights2[0] = pointLights[1]; //Obj J1
+	pointLights2[1] = pointLights[2]; //Obj J2
+	pointLights2[2] = pointLights[0]; //flipper
+
+	//Tercer arreglo luz puntual 
+	pointLights3[0] = pointLights[2]; //Obj J2
+	pointLights3[1] = pointLights[0]; //flipper
+	pointLights3[2] = pointLights[1]; //Obj J1 
+
 	unsigned int spotLightCount = 0;
-	//linterna
+	//Linterna personaje
 	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
 		0.8f, 8.0f,
 		0.0f, 0.0f, 0.0f, //Posición de la luz
@@ -361,46 +394,10 @@ int main()
 		50.0f); //Ángulo - Ampliación de diametro
 	spotLightCount++;
 
-	/*
-	spotLights[1] = SpotLight(0.0f, 0.0f, 1.0f, //Color de luz AZUL
-		1.0f, 0.0f,
-		0.0f, 0.0f, 0.0f,
-		0.0f, 0.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		20.0f); //Ángulo - Ampliación de diametro
-	spotLightCount++;
-	*/
+	// Segundo arreglo luz spot
+	spotLights2[0] = spotLights[1]; //Luz tablero
+	spotLights2[1] = spotLights[0]; //Linterna personaje
 
-	/*//luz fija - Luz verde
-	spotLights[1] = SpotLight(0.0f, 1.0f, 0.0f,
-		1.0f, 2.0f,
-		5.0f, 10.0f, 0.0f, 
-		0.0f, -5.0f, 0.0f,
-		1.0f, 0.0f, 0.0f, //SE DEBE DE MOVER LA EL PREVIO
-		15.0f); //Ángulo - Ampliación de diametro
-	spotLightCount++;
-	
-//se crean mas luces puntuales y spotlight 
-	//luz fija - Luz verde
-	spotLights[1] = SpotLight(0.0f, 1.0f, 0.0f,
-		1.0f, 2.0f,
-		5.0f, 10.0f, 0.0f,
-		0.0f, -5.0f, 0.0f,
-		1.0f, 0.0f, 0.0f, //SE DEBE DE MOVER LA EL PREVIO
-		15.0f); //Ángulo - Ampliación de diametro
-	spotLightCount++;*/
-
-
-
-/*
-//Spotlight del faro del carro
-	spotLights[2] = SpotLight(0.0f, 0.0f, 1.0f, //Color de luz AZUL
-		1.0f, 0.0f,
-		0.0f, 0.0f, 0.0f,
-		0.0f, 0.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		20.0f); //Ángulo - Ampliación de diametro
-	spotLightCount++; */
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0;
@@ -408,17 +405,15 @@ int main()
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
 	////Loop mientras no se cierra la ventana
 
-//Variables animación básica canica1
-movCanica1_X = 125.0f;
-movCanica1_Z = 100.0f;
-movCanicaOffset = 1.0f;
+	//Variables animación básica canica1
+	movCanica1_X = 125.0f;
+	movCanica1_Z = 100.0f;
+	movCanicaOffset = 1.0f;
 
-recorrido1 = true;
-recorrido2 = false;
-recorrido3 = false;
-recorrido4 = false;
-
-
+	recorrido1 = true;
+	recorrido2 = false;
+	recorrido3 = false;
+	recorrido4 = false;
 
 	while (!mainWindow.getShouldClose())
 	{
@@ -492,26 +487,49 @@ recorrido4 = false;
 
 		//información al shader de fuentes de iluminación
 		shaderList[0].SetDirectionalLight(&mainLight);
-		shaderList[0].SetPointLights(pointLights, pointLightCount);
-		shaderList[0].SetSpotLights(spotLights, spotLightCount);
+		
 
-//Función para prender y apagar luces
+	//Función para prender y apagar luces
 
-	////Prende y apagar luz puntual entre flippers
-	//	if (mainWindow.getLuzFlippers() == true) {
-	//		shaderList[0].SetPointLights(pointLights, pointLightCount);
-	//	}
-	//	else {
-	//		shaderList[0].SetPointLights(pointLights, pointLightCount - 2);
-	//	}
+	//Point Lights
 
-	////Prende y apagar luz puntual entre flippers
-	//	if (mainWindow.getLuzTablero() == true) {
-	//		shaderList[0].SetSpotLights(spotLights, spotLightCount);
-	//	}
-	//	else {
-	//		shaderList[0].SetSpotLights(spotLights, spotLightCount - 2);
-	//	}
+		if (mainWindow.getLuzFlippers() && luzObJ1 && luzObJ2) {
+			shaderList[0].SetPointLights(pointLights, pointLightCount);
+		}
+		else if (mainWindow.getLuzFlippers() && luzObJ1 && !luzObJ2) {
+			shaderList[0].SetPointLights(pointLights, pointLightCount - 1);
+		}
+		else if (mainWindow.getLuzFlippers() && !luzObJ1 && luzObJ2) {
+			shaderList[0].SetPointLights(pointLights2, pointLightCount - 1);
+		}
+		else if (mainWindow.getLuzFlippers() && !luzObJ1 && !luzObJ2) {
+			shaderList[0].SetPointLights(pointLights, pointLightCount - 2);
+		}
+		else if (!mainWindow.getLuzFlippers() && luzObJ1 && luzObJ2) {
+			shaderList[0].SetPointLights(pointLights2, pointLightCount - 1);
+		}
+		else if (!mainWindow.getLuzFlippers() && luzObJ1 && !luzObJ2) {
+			shaderList[0].SetPointLights(pointLights2, pointLightCount - 2);
+		}
+		else if (!mainWindow.getLuzFlippers() && !luzObJ1 && luzObJ2) {
+			shaderList[0].SetPointLights(pointLights3, pointLightCount - 1);
+		}
+
+	//Spot Lights
+		if (mainWindow.getLuzTablero() && mainWindow.getLuzLinterna()) {
+			spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
+			shaderList[0].SetSpotLights(spotLights, spotLightCount);
+		}else if (mainWindow.getLuzTablero() && !mainWindow.getLuzLinterna()) {
+			spotLights2[1].SetFlash(lowerLight, camera.getCameraDirection());
+			shaderList[0].SetSpotLights(spotLights2, spotLightCount - 1);
+		}
+		else if (!mainWindow.getLuzTablero() && mainWindow.getLuzLinterna()) {
+			spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
+			shaderList[0].SetSpotLights(spotLights, spotLightCount - 1);
+		}
+		else {
+			shaderList[0].SetSpotLights(spotLights, spotLightCount - 2);
+		}
 
 //Se implemeta el cambio de la cámara
 		if (mainWindow.getcambiaCamara()) { //La tecla Z para la cámara isométrica
@@ -700,6 +718,17 @@ recorrido4 = false;
 		canica2_T.UseTexture();
 		canica2_M.RenderModel();
 
+		//INSTANCIA PERSONAJE
+		
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(115.0f+mainWindow.getMovX(), 121.5f, 100.0f+mainWindow.getMovZ()));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		color = glm::vec3(1.0f, 1.0f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		melody.RenderModel();
 
 		//INSTANCIA 1 DEL OBJETO JERARQUICO
 
@@ -797,35 +826,6 @@ recorrido4 = false;
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puertaVanta2.RenderModel();
-
-
-
-
-		/*
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(0.2f, 5.4f, -1.7f));
-		model = glm::rotate(model, glm::radians(mainWindow.getangulo_pdelizq()), glm::vec3(0.0f, 0.1f, 0.1f));
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		color = glm::vec3(1.0f, 0.0f, 1.0f);
-		PDELIZQ_M.RenderModel();
-		*/
-
-		/*
-		//Agave 
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 1.0f, -4.0f));
-		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		
-		//blending: transparencia o traslucidez
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		AgaveTexture.UseTexture();
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		meshList[3]->RenderMesh();
-		glDisable(GL_BLEND);
-		*/
 
 		glUseProgram(0);
 
