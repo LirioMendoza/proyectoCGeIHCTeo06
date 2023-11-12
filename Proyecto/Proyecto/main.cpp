@@ -912,7 +912,7 @@ int main()
 		//INSTANCIA PERSONAJE
 		
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(115.0f+mainWindow.getMovX(), 121.5f, 100.0f+mainWindow.getMovZ()));
+		model = glm::translate(model, glm::vec3(110.0f+mainWindow.getMovX(), 121.5f, 100.0f+mainWindow.getMovZ()));
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
