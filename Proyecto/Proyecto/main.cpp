@@ -57,7 +57,6 @@ Model puertaVanta2;
 Model melody;
 
 Model luna1;
-Model luna2;
 
 //Texturas proyecto
 Texture resorte_T;
@@ -425,8 +424,6 @@ int main()
   //Obstáculos
 	luna1 = Model();
 	luna1.LoadModel("Models/Luna/Luna.obj");
-	
-	luna2 = Model();
 
 
 	//Texturas proyecto
@@ -472,8 +469,8 @@ int main()
 	vantaCuerpo_T = Texture("Textures/Vanta/vanta_Base_Color.jpg");
 	vantaCuerpo_T.LoadTextureA();
 
-	vantapuerta_T = Texture("Textures/Vanta/puerta_Base_Color.jpg");
-	vantapuerta_T.LoadTextureA();
+	/*vantapuerta_T = Texture("Textures/Vanta/puerta_Base_Color.jpg");
+	vantapuerta_T.LoadTextureA();*/
 	
 
 	//Textura lunitas
@@ -950,11 +947,11 @@ int main()
 
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.82f));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		color = glm::vec3(0.0f, 0.0f, 0.0f);
+		color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puertaVanta1.RenderModel();
-	/*	vantapuerta_T.UseTexture();*/
+		//vantapuerta_T.UseTexture();
 
 		model = modelaux;
 
@@ -962,7 +959,7 @@ int main()
 
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -0.82f));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		color = glm::vec3(0.0f, 0.0f, 0.0f);
+		color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puertaVanta2.RenderModel();
@@ -1020,7 +1017,9 @@ int main()
 		puertaVanta2.RenderModel();
 		//vantapuerta_T.UseTexture();
 
-		//Dibujamos luna
+		//OBSTÁCULOS LUNA
+
+		//Dibujamos luna 1
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(45.0f, 123.0f, -75.0f));
 		model = glm::scale(model, glm::vec3(20.0f, 20.0f, 20.0f));
@@ -1028,7 +1027,7 @@ int main()
 		luna1.RenderModel();
 		luna_T.UseTexture();
 
-		//Dibujamos luna
+		//Dibujamos luna 2
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-10.0f, 123.0f, 20.0f));
 		model = glm::scale(model, glm::vec3(20.0f, 20.0f, 20.0f));
