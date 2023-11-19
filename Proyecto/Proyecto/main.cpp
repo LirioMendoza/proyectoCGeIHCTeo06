@@ -56,9 +56,6 @@ Model puertaVanta2;
 Model melody;
 
 Model luna1;
-
-Model flipper2;
-
 //Texturas proyecto
 Texture resorte_T;
 Texture maquina_T;
@@ -395,11 +392,6 @@ int main()
 	//Flipper
 	flipper_M = Model();
 	flipper_M.LoadModel("Models/Flipper/Flipper.obj");
-
-	flipper2 = Model();
-	flipper2.LoadModel("Models/Flipper/Flipper.obj");
-
-
 	//Obstaculo flor
 	obstaculoFlor_M = Model();
 	obstaculoFlor_M.LoadModel("Models/Flower/cartoon_flower.obj");
@@ -478,10 +470,6 @@ int main()
 
 	vantaCuerpo_T = Texture("Textures/Vanta/vanta_Base_Color.jpg");
 	vantaCuerpo_T.LoadTextureA();
-
-	/*vantapuerta_T = Texture("Textures/Vanta/puerta_Base_Color.jpg");
-	vantapuerta_T.LoadTextureA();*/
-	
 
 	//Textura lunitas
 	luna_T = Texture("Textures/Luna/Luna_Base_Color.jpg");
@@ -870,7 +858,6 @@ int main()
 
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		resorte_M.RenderModel();
-		//resorte_T.UseTexture();
 
 //Dibujamos tablero
 		model = glm::mat4(1.0);
