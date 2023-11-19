@@ -29,7 +29,6 @@
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "Material.h"
-const float toRadians = 3.14159265f / 180.0f;
 
 Window mainWindow;
 std::vector<Mesh*> meshList;
@@ -57,6 +56,8 @@ Model puertaVanta2;
 Model melody;
 
 Model luna1;
+
+Model flipper2;
 
 //Texturas proyecto
 Texture resorte_T;
@@ -394,6 +395,11 @@ int main()
 	//Flipper
 	flipper_M = Model();
 	flipper_M.LoadModel("Models/Flipper/Flipper.obj");
+
+	flipper2 = Model();
+	flipper2.LoadModel("Models/Flipper/Flipper.obj");
+
+
 	//Obstaculo flor
 	obstaculoFlor_M = Model();
 	obstaculoFlor_M.LoadModel("Models/Flower/cartoon_flower.obj");
@@ -822,7 +828,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(10.0f, 119.f, 0.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, rot_piramide * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(rot_piramide), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		piramide_T.UseTexture();
 		meshList[4]->RenderMesh();
@@ -831,7 +837,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(90.0f, 119.f, 50.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, rot_piramide * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(rot_piramide), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		piramide_T.UseTexture();
 		meshList[4]->RenderMesh();
@@ -840,7 +846,7 @@ int main()
 //Resorte
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(132.0f, 129.0f, 150.0f));
-		model = glm::rotate(model, 270 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		modelaux = model;
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
 
@@ -870,7 +876,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(50.0f, 110.0f, 0.0f));
 		modelaux = model;
-		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(180.0f) , glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -883,8 +889,8 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(10.0f, 123.0f, 100.0f));
 		modelaux = model;
-		model = glm::rotate(model, 180 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, mainWindow.getMovFlipDer() * toRadians, glm::vec3(0.0f, 0.1f, 0.0f));
+		model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model,  glm::radians(mainWindow.getMovFlipIzq()), glm::vec3(0.0f, 0.1f, 0.0f));
 		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -895,8 +901,8 @@ int main()
 		//Dibujamos filper inf der
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(80.0f, 123.0f, 100.0f));
-		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-		model = glm::rotate(model, mainWindow.getMovFlipIzq() * toRadians, glm::vec3(0.0f, 0.1f, 0.0f));
+		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(mainWindow.getMovFlipDer()), glm::vec3(0.0f, 0.1f, 0.0f));
 		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -907,8 +913,8 @@ int main()
 		//Dibujamos filper sup izq
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-57.0f, 123.0f, -30.0f));
-		model = glm::rotate(model, toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-		model = glm::rotate(model, mainWindow.getMovFlipIzq2() * toRadians, glm::vec3(0.0f, 0.1f, 0.0f));
+		model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(mainWindow.getMovFlipIzq2()), glm::vec3(0.0f, 0.1f, 0.0f));
 		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));

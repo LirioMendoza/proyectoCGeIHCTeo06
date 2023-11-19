@@ -141,46 +141,75 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 		theWindow-> muevex -= 1.0;
 	}
 
-//Movimiento Flipper der
+//Movimiento Flipper izquierdo inferior
+	//sube
 	if (key == GLFW_KEY_1)
 	{
-		if(theWindow->angFlip_Der > 45.0f){
+		if(theWindow->angFlip_Izq > 20.0f){ 
 		}
 		else {
-			theWindow->angFlip_Der += 10.0f;
+			theWindow->angFlip_Izq += 5.0f;
 		}
 		
 	}
+	//Baja
 	if (key == GLFW_KEY_2)
 	{
-		if (theWindow->angFlip_Der < -25.0f) {
+		if (theWindow->angFlip_Izq < -30.0f) {
+			
 		}
 		else {
-			theWindow->angFlip_Der -= 10.0f;
+			theWindow->angFlip_Izq -= 5.0f;
 		}
 
 	}
 
-//Movimiento Flipper izq
+//Movimiento Flipper derecho
+
+
 	if (key == GLFW_KEY_3)
 	{
-		if (theWindow->angFlip_Izq > 45.0f) {
+		if (theWindow->angFlip_Der < -20.0f) {
 		}
 		else {
-			theWindow->angFlip_Izq += 10.0f;
+			theWindow->angFlip_Der -= 5.0f;
 		}
 
 	}
 
 	if (key == GLFW_KEY_4)
 	{
-		if (theWindow->angFlip_Izq < -25.0f) {
+		if (theWindow->angFlip_Der > 30.0f) {
 		}
 		else {
-			theWindow->angFlip_Izq -= 10.0f;
+			theWindow->angFlip_Der += 5.0f;
 		}
 
 	}
+
+	//Movimiento Flipper izquierdo superior
+
+	if (key == GLFW_KEY_5)
+	{
+		if (theWindow->angFlip_Izq2 > 20.0f) {
+		}
+		else {
+			theWindow->angFlip_Izq2 += 5.0f;
+		}
+
+	}
+	//decrementa - suba
+	if (key == GLFW_KEY_6)
+	{
+		if (theWindow->angFlip_Izq2 < -30.0f) {
+
+		}
+		else {
+			theWindow->angFlip_Izq2 -= 5.0f;
+		}
+
+	}
+
 
 //Movimiento personaje (eje Z)
 	if (key == GLFW_KEY_U)
@@ -205,15 +234,6 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	}
 
 
-	if (key == GLFW_KEY_6)
-	{
-		if (theWindow->angFlip_Izq2 < -25.0f) {
-		}
-		else {
-			theWindow->angFlip_Izq2 -= 10.0f;
-		}
-
-	}
 
 //Luz flippers
 	if (key == GLFW_KEY_Q && action == GLFW_PRESS)

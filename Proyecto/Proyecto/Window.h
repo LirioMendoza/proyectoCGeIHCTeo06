@@ -18,11 +18,11 @@ public:
 	GLboolean getAnimResorte() { return animResorte;  }
 
 //Movimiento Flipper der
-	GLboolean getMovFlipDer() { return angFlip_Der; }
+	GLfloat getMovFlipDer() { return angFlip_Der; }
 //Movimiento Flipper izq
-	GLboolean getMovFlipIzq() { return angFlip_Izq; }
+	GLfloat getMovFlipIzq() { return angFlip_Izq; }
 //Movimiento Flipper izq sup
-	GLboolean getMovFlipIzq2() { return angFlip_Izq2; }
+	GLfloat getMovFlipIzq2() { return angFlip_Izq2; }
 
 //Cambio cámara
 	GLint getcambiaCamara() { return cambiaCamara; }
