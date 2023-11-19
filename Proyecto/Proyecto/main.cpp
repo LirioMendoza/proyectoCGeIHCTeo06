@@ -771,7 +771,7 @@ int main()
 
 //Piramide por código 1
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-1.5f, 119.f, -2.0f));
+		model = glm::translate(model, glm::vec3(10.0f, 119.f, 0.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
 		model = glm::rotate(model, rot_piramide * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -780,7 +780,7 @@ int main()
 
 //Piramide por código 2
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(80.0f, 119.f, 50.0f));
+		model = glm::translate(model, glm::vec3(90.0f, 119.f, 50.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
 		model = glm::rotate(model, rot_piramide * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -790,10 +790,10 @@ int main()
 
 //Resorte
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(125.0f, 132.0f, 145.0f));
+		model = glm::translate(model, glm::vec3(128.0f, 132.0f, 150.0f));
 		model = glm::rotate(model, 270 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 		modelaux = model;
-		model = glm::scale(model, glm::vec3(13.05f, 13.05f, 13.05f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
 
 //Animación resorte
 		if (mainWindow.getAnimResorte() == true) {
@@ -876,14 +876,13 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		hongo1_T1.UseTexture();
-		//hongo1_T2.UseTexture();
 		hongo1_M.RenderModel();
 
 //Dibujamos canica 1 - Animación básica
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(movCanica1_X, 122.0f, movCanica1_Z));
 		modelaux = model;
-		model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
+		model = glm::scale(model, glm::vec3(1.25f, 1.25f, 1.25f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -896,7 +895,7 @@ int main()
 		posicionCanica2 = glm::vec3(pos_X_Canica2 + movCanica2_X, pos_Y_Canica2, pos_Z_Canica2 + movCanica2_Z);
 		model = glm::translate(model, posicionCanica2);
 		modelaux = model;
-		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		model = glm::scale(model, glm::vec3(1.25f, 1.25f, 1.25f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -951,7 +950,6 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puertaVanta1.RenderModel();
-		//vantapuerta_T.UseTexture();
 
 		model = modelaux;
 
@@ -963,7 +961,6 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puertaVanta2.RenderModel();
-		//vantapuerta_T.UseTexture();
 
 
 		//INSTANCIA 2 DEL OBJETO JERARQUICO
@@ -1003,7 +1000,7 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puertaVanta1.RenderModel();
-		//vantapuerta_T.UseTexture();
+
 
 		model = modelaux;
 
@@ -1015,7 +1012,6 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puertaVanta2.RenderModel();
-		//vantapuerta_T.UseTexture();
 
 		//OBSTÁCULOS LUNA
 
