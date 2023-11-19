@@ -132,6 +132,10 @@ bool recorrido1;
 bool recorrido2;
 bool recorrido3;
 bool recorrido4;
+bool recorrido5;
+bool recorrido6;
+bool recorrido7;
+bool recorrido8;
 
 //Variables animación por Key frames
 float iniciaAnimacion;
@@ -561,8 +565,8 @@ int main()
 	rot_piramide_Offset = 5.0f; //Velocidad de giro de la piramide
 
 //Variables animación baica canica1 
-	movCanica1_X = 125.0f;
-	movCanica1_Z = 100.0f;
+	movCanica1_X = 133.0f;
+	movCanica1_Z = 123.0f;
 	movCanicaOffset = 1.0f;
 
 	recorrido1 = true;
@@ -724,36 +728,81 @@ int main()
 
 //Animación básica de la canica1
 		if (mainWindow.getAnimCanica1() == true) {
+			//canica sube
 			if (recorrido1) {
 				movCanica1_Z -= movCanicaOffset * deltaTime;
 				//printf("movCanica1_Z %f\n", movCanica1_Z);
-				if (movCanica1_Z < -70.0f) {
+				if (movCanica1_Z < -75.0f) {
 					recorrido1 = false;
 					recorrido2 = true;
 				}
 			}
-			if (recorrido2) { 
+			//curvatura arriba izquierda
+			if (recorrido2) {
 				movCanica1_X -= movCanicaOffset * deltaTime;
-				if (movCanica1_X < -15.0f) {
+				movCanica1_Z -= movCanicaOffset * deltaTime;
+				if ((movCanica1_Z < -85.0f) && (movCanica1_X < 110.0f)) {
 					recorrido2 = false;
 					recorrido3 = true;
 				}
 			}
-			if (recorrido3) { 
-				movCanica1_Z += movCanicaOffset * deltaTime;
-				if (movCanica1_Z > 90.0f) {
-					recorrido3 = false;
+			//canica izquierda
+			if (recorrido3) {
+				movCanica1_X -= movCanicaOffset * deltaTime;
+				if (movCanica1_X < 40.0f) {
 					recorrido3 = false;
 					recorrido4 = true;
 				}
 			}
+
+			//curva izquierda abajo
 			if (recorrido4) {
-				movCanica1_X += movCanicaOffset * deltaTime;
-				if (movCanica1_X > 125.0f) {
+				movCanica1_X -= movCanicaOffset * deltaTime;
+				movCanica1_Z += movCanicaOffset * deltaTime;
+				if ((movCanica1_Z > -50.0f) && (movCanica1_X < 30.0f)) {
 					recorrido4 = false;
+					recorrido5 = true;
+				}
+			}
+
+			//Abajo
+			if (recorrido5) {
+				movCanica1_Z += movCanicaOffset * deltaTime;
+				if (movCanica1_Z > 5.0f) {
+					recorrido5 = false;
+					recorrido6 = true;
+				}
+			}
+
+			//choque con obstaculo de luna
+			if (recorrido6) {
+				movCanica1_X -= movCanicaOffset * deltaTime;
+				movCanica1_Z += movCanicaOffset * deltaTime;
+				if ((movCanica1_Z > 30.0f) && (movCanica1_X < 15.0f)) {
+
+					recorrido6 = false;
+					recorrido7 = true;
+				}
+			}
+
+			//Abajo
+			if (recorrido7) {
+				movCanica1_Z += movCanicaOffset * deltaTime;
+				if (movCanica1_Z > 118.0f) {
+					recorrido7 = false;
+					recorrido8 = true;
+				}
+			}
+
+			//Regresa a su posición
+			if (recorrido8) {
+				movCanica1_X += movCanicaOffset * deltaTime;
+				if (movCanica1_X > 131.0f) {
+					recorrido8 = false;
 				}
 			}		
 		}
+
 		if (mainWindow.getAnimCanica1() == false) {
 			recorrido1 = true;
 		}
@@ -790,7 +839,7 @@ int main()
 
 //Resorte
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(128.0f, 132.0f, 150.0f));
+		model = glm::translate(model, glm::vec3(132.0f, 129.0f, 150.0f));
 		model = glm::rotate(model, 270 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 		modelaux = model;
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
@@ -1012,7 +1061,7 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puertaVanta2.RenderModel();
-
+	
 		//OBSTÁCULOS LUNA
 
 		//Dibujamos luna 1
