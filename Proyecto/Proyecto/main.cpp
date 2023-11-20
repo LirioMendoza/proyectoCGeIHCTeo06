@@ -68,7 +68,6 @@ Texture piramide_T;
 
 Texture vantaBase_T;
 Texture vantaCuerpo_T;
-Texture vantapuerta_T;
 Texture luna_T;
 
 
@@ -135,6 +134,10 @@ bool recorrido6;
 bool recorrido7;
 bool recorrido8;
 
+//Variables animaci�n piramide
+float rot_piramide;
+float rot_piramide_Offset;
+
 //Variables animación por Key frames
 float iniciaAnimacion;
 float activaAnimacion;
@@ -151,10 +154,6 @@ float movCanica2_Z = 0;
 #define MAX_FRAMES 100
 int i_max_steps = 90;
 int i_curr_steps = 7;
-
-//Variables animaci�n piramide
-float rot_piramide;
-float rot_piramide_Offset;
 
 typedef struct _frame
 {
@@ -383,7 +382,7 @@ int main()
 
 
 	//Modelos proyecto
-		//Resorte
+	//Resorte
 	resorte_M = Model();
 	resorte_M.LoadModel("Models/Resorte/Resorte.obj");
 	//Maquina
@@ -429,7 +428,7 @@ int main()
 
 
 	//Texturas proyecto
-		//Resorte
+	//Resorte
 	resorte_T = Texture("Textures/Resorte/Metal.jpg");
 	resorte_T.LoadTextureA();
 	//Maquina
@@ -558,7 +557,7 @@ int main()
 	rot_piramide = 0.0f;
 	rot_piramide_Offset = 5.0f; //Velocidad de giro de la piramide
 
-//Variables animación baica canica1 
+//Variables animación basica canica1 
 	movCanica1_X = 133.0f;
 	movCanica1_Z = 123.0f;
 	movCanicaOffset = 1.0f;
@@ -567,6 +566,10 @@ int main()
 	recorrido2 = false;
 	recorrido3 = false;
 	recorrido4 = false;
+	recorrido5 = false;
+	recorrido6 = false;
+	recorrido7 = false;
+	recorrido8 = false;
 
 //Variables animación por key frames canica2 
 	glm::vec3 posicionCanica2 = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -747,7 +750,7 @@ int main()
 					recorrido3 = false;
 					recorrido4 = true;
 				}
-			}
+			}	
 
 			//curva izquierda abajo
 			if (recorrido4) {
@@ -876,7 +879,6 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(10.0f, 123.0f, 100.0f));
 		modelaux = model;
-		model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::rotate(model,  glm::radians(mainWindow.getMovFlipIzq()), glm::vec3(0.0f, 0.1f, 0.0f));
 		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -900,7 +902,6 @@ int main()
 		//Dibujamos filper sup izq
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-57.0f, 123.0f, -30.0f));
-		model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::rotate(model, glm::radians(mainWindow.getMovFlipIzq2()), glm::vec3(0.0f, 0.1f, 0.0f));
 		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -1031,9 +1032,7 @@ int main()
 		vantaCuerpo_T.UseTexture();
 		vanta.RenderModel();
 		
-
 		model = modelaux;
-
 		//Dibujamos obstaculo jerarquico puerta1
 
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.82f));
@@ -1043,11 +1042,8 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puertaVanta1.RenderModel();
 
-
 		model = modelaux;
-
 		//Dibujamos obstaculo jerarquico puerta2
-
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -0.82f));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
