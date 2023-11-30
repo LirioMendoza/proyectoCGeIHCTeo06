@@ -28,13 +28,11 @@
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "SpotLight.h"
-#include "Material.h" 
+#include "Material.h"
 
 //Añadiendo includes para el audio
 #include <irrKlang.h>
 using namespace irrklang;
-
-const float toRadians = 3.14159265f / 180.0f;
 
 Window mainWindow;
 std::vector<Mesh*> meshList;
@@ -62,8 +60,6 @@ Model puertaVanta2;
 Model melody;
 
 Model luna1;
-Model luna2;
-
 //Texturas proyecto
 Texture resorte_T;
 Texture maquina_T;
@@ -76,8 +72,8 @@ Texture piramide_T;
 
 Texture vantaBase_T;
 Texture vantaCuerpo_T;
-Texture vantapuerta_T;
 Texture luna_T;
+Texture arrow_T;
 
 
 Skybox skybox;
@@ -92,7 +88,7 @@ GLfloat lastTime = 0.0f;
 static double limitFPS = 1.0 / 60.0;
 
 // luz direccional
-DirectionalLight mainLight; 
+DirectionalLight mainLight;
 DirectionalLight mainLight2;
 
 //Luces de tipo pointlight
@@ -138,6 +134,14 @@ bool recorrido1;
 bool recorrido2;
 bool recorrido3;
 bool recorrido4;
+bool recorrido5;
+bool recorrido6;
+bool recorrido7;
+bool recorrido8;
+
+//Variables animaci�n piramide
+float rot_piramide;
+float rot_piramide_Offset;
 
 //Variables animación por Key frames
 float iniciaAnimacion;
@@ -146,7 +150,7 @@ bool animacion = false;
 
 //Variables animación canica2
 float pos_X_Canica2 = 70.0f; //Hay que inicializar en la posici�n inicial
-float pos_Y_Canica2 = 119.0f; 
+float pos_Y_Canica2 = 119.0f;
 float pos_Z_Canica2 = 4.0f;
 
 float movCanica2_X = 0;
@@ -155,10 +159,6 @@ float movCanica2_Z = 0;
 #define MAX_FRAMES 100
 int i_max_steps = 90;
 int i_curr_steps = 7;
-
-//Variables animaci�n piramide
-float rot_piramide;
-float rot_piramide_Offset;
 
 typedef struct _frame
 {
@@ -310,22 +310,39 @@ void CreateObjects()
 
 
 	};
-	
-	Mesh *obj1 = new Mesh();
+
+	unsigned int arrowI[] = {
+	   0, 1, 2,
+	   0, 2, 3,
+	};
+
+	GLfloat arrowV[] = {
+		-0.5f, 0.0f, 0.5f,		0.0f, 0.0f,		0.0f, -1.0f, 0.0f,
+		0.5f, 0.0f, 0.5f,		1.0f, 0.0f,		0.0f, -1.0f, 0.0f,
+		0.5f, 0.0f, -0.5f,		1.0f, 1.0f,		0.0f, -1.0f, 0.0f,
+		-0.5f, 0.0f, -0.5f,		0.0f, 1.0f,		0.0f, -1.0f, 0.0f,
+
+	};
+
+	Mesh* obj1 = new Mesh();
 	obj1->CreateMesh(vertices, indices, 32, 12);
 	meshList.push_back(obj1);
 
-	Mesh *obj2 = new Mesh();
+	Mesh* obj2 = new Mesh();
 	obj2->CreateMesh(vertices, indices, 32, 12);
 	meshList.push_back(obj2);
 
-	Mesh *obj3 = new Mesh();
+	Mesh* obj3 = new Mesh();
 	obj3->CreateMesh(floorVertices, floorIndices, 32, 6);
 	meshList.push_back(obj3);
 
 	Mesh* obj4 = new Mesh();
 	obj4->CreateMesh(vegetacionVertices, vegetacionIndices, 64, 12);
 	meshList.push_back(obj4);
+
+	Mesh* obj5 = new Mesh();
+	obj5->CreateMesh(arrowV, arrowI, 32, 6);
+	meshList.push_back(obj5);
 
 	calcAverageNormals(indices, 12, vertices, 32, 8, 5);
 
@@ -336,7 +353,7 @@ void CreateObjects()
 
 void CreateShaders()
 {
-	Shader *shader1 = new Shader();
+	Shader* shader1 = new Shader();
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
 }
@@ -356,15 +373,15 @@ void Crear_piramide()
 		1.0f, 0.0f, 0.0f,		0.33f,  0.33f,		0.0f,	1.0f,	0.0f,
 		 0.5f, 1.0f, 0.0f,		0.66f,  0.33f,		0.0f,	1.0f,	0.0f,
 
-		// Cara frontal
-		 0.0f, 0.0f, 0.0f,		0.8f,  0.66f,		0.0f,   1.0f,   0.0f,
-		 0.5f, 1.0f, 0.0f,		0.66f,  0.33f,		0.0f,   1.0f,   0.0f,
-		0.5f, 0.0f, 1.0f,		1.0f,  0.33f,		0.0f,   1.0f,   0.0f,
+		 // Cara frontal
+		  0.0f, 0.0f, 0.0f,		0.8f,  0.66f,		0.0f,   1.0f,   0.0f,
+		  0.5f, 1.0f, 0.0f,		0.66f,  0.33f,		0.0f,   1.0f,   0.0f,
+		 0.5f, 0.0f, 1.0f,		1.0f,  0.33f,		0.0f,   1.0f,   0.0f,
 
-		// Cara superior
-		 1.0f, 0.0f, 0.0f,		0.2f,  0.66f,		0.0f,   0.0f,   1.0f,
-		0.5f, 1.0f, 0.0f,		0.0f,  0.33f,		0.0f,   0.0f,   1.0f,
-		 0.5f, 0.0f, 1.0f,		0.33f,  0.33f,		0.0f,   0.0f,   1.0f,
+		 // Cara superior
+		  1.0f, 0.0f, 0.0f,		0.2f,  0.66f,		0.0f,   0.0f,   1.0f,
+		 0.5f, 1.0f, 0.0f,		0.0f,  0.33f,		0.0f,   0.0f,   1.0f,
+		  0.5f, 0.0f, 1.0f,		0.33f,  0.33f,		0.0f,   0.0f,   1.0f,
 	};
 
 	Mesh* piramide = new Mesh();
@@ -379,8 +396,9 @@ int main()
 	if (!engine) {
 		return 0;
 	}
-	engine->play2D("media/cute_music1.mp3", true);
-	
+	engine->play2D("media/sweet-cafe.mp3", true);
+
+
 	mainWindow = Window(1366, 768); // 1280, 1024 or 1024, 768
 	mainWindow.Initialise();
 
@@ -393,7 +411,7 @@ int main()
 
 
 	//Modelos proyecto
-		//Resorte
+	//Resorte
 	resorte_M = Model();
 	resorte_M.LoadModel("Models/Resorte/Resorte.obj");
 	//Maquina
@@ -433,15 +451,13 @@ int main()
 	melody = Model();
 	melody.LoadModel("Models/Melody/melody.obj");
 
-  //Obstáculos
+	//Obstáculos
 	luna1 = Model();
 	luna1.LoadModel("Models/Luna/Luna.obj");
-	
-	luna2 = Model();
 
 
 	//Texturas proyecto
-		//Resorte
+	//Resorte
 	resorte_T = Texture("Textures/Resorte/Metal.jpg");
 	resorte_T.LoadTextureA();
 	//Maquina
@@ -483,14 +499,13 @@ int main()
 	vantaCuerpo_T = Texture("Textures/Vanta/vanta_Base_Color.jpg");
 	vantaCuerpo_T.LoadTextureA();
 
-	vantapuerta_T = Texture("Textures/Vanta/puerta_Base_Color.jpg");
-	vantapuerta_T.LoadTextureA();
-	
-
 	//Textura lunitas
 	luna_T = Texture("Textures/Luna/Luna_Base_Color.jpg");
 	luna_T.LoadTextureA();
 
+	//Textura flechas
+	arrow_T = Texture("Textures/Pinball/arrow.png");
+	arrow_T.LoadTextureA();
 
 	std::vector<std::string> skyboxFaces;
 
@@ -508,9 +523,9 @@ int main()
 
 	//contador de luces puntuales
 	unsigned int pointLightCount = 0;
-	
+
 	//Luz entre los flippers
-	pointLights[0] = PointLight(0.9176470588235294f, 0.792156862745098f, 0.09411764705882353f, 
+	pointLights[0] = PointLight(0.9176470588235294f, 0.792156862745098f, 0.09411764705882353f,
 		20.0f, 10.0f,
 		//+/-Intensidad de color   //+/- Radiante de color
 		45.0f, 130.0f, 120.0f, //Ubicación de la luz
@@ -527,7 +542,7 @@ int main()
 	//Luz objeto jerárquico 2
 	pointLights[2] = PointLight(0.0f, 1.0f, 1.5f,
 		1.0f, 1.0f,
-		85.0f, 123.0f, 0.0f,
+		75.0f, 130.0f, -15.0f,
 		0.0f, 0.0f, 0.01f);
 	pointLightCount++;
 
@@ -559,7 +574,7 @@ int main()
 		1.0f, 0.0f, 0.0f,
 		50.0f); //Ángulo - Ampliación de diametro
 	spotLightCount++;
-  
+
 	// Segundo arreglo luz spot
 	spotLights2[0] = spotLights[1]; //Luz tablero
 	spotLights2[1] = spotLights[0]; //Linterna personaje
@@ -574,30 +589,34 @@ int main()
 	rot_piramide = 0.0f;
 	rot_piramide_Offset = 5.0f; //Velocidad de giro de la piramide
 
-//Variables animación baica canica1 
-	movCanica1_X = 125.0f;
-	movCanica1_Z = 100.0f;
+	//Variables animación basica canica1 
+	movCanica1_X = 133.0f;
+	movCanica1_Z = 123.0f;
 	movCanicaOffset = 1.0f;
 
 	recorrido1 = true;
 	recorrido2 = false;
 	recorrido3 = false;
 	recorrido4 = false;
+	recorrido5 = false;
+	recorrido6 = false;
+	recorrido7 = false;
+	recorrido8 = false;
 
-//Variables animación por key frames canica2 
+	//Variables animación por key frames canica2 
 	glm::vec3 posicionCanica2 = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	KeyFrame[0].movCanica2_X = 0.0f;
 	KeyFrame[0].movCanica2_Z = 0.0f;
 
 	KeyFrame[1].movCanica2_X = -60.0f; //Se desplaza a la flor morada
-	KeyFrame[1].movCanica2_Z = -40.0f; 
+	KeyFrame[1].movCanica2_Z = -40.0f;
 
 	KeyFrame[2].movCanica2_X = -10.0f; //Se desplaza a la flor azul
-	KeyFrame[2].movCanica2_Z = -82.0f; 
+	KeyFrame[2].movCanica2_Z = -82.0f;
 
 	KeyFrame[3].movCanica2_X = -60.0f; //Se desplaza al hongo
-	KeyFrame[3].movCanica2_Z = -125.0f; 
+	KeyFrame[3].movCanica2_Z = -125.0f;
 
 	KeyFrame[4].movCanica2_X = -10.0f; //Se desplaza a la flor azul de regreso
 	KeyFrame[4].movCanica2_Z = -82.0f;
@@ -661,7 +680,7 @@ int main()
 		uniformView = shaderList[0].GetViewLocation();
 		uniformEyePosition = shaderList[0].GetEyePositionLocation();
 		uniformColor = shaderList[0].getColorLocation();
-		
+
 		//información en el shader de intensidad especular y brillo
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 		uniformShininess = shaderList[0].GetShininessLocation();
@@ -680,10 +699,10 @@ int main()
 		else {
 			shaderList[0].SetDirectionalLight(&mainLight2);
 		}
-		
-	//Funciones para prender y apagar luces
-    
-	//Point Lights
+
+		//Funciones para prender y apagar luces
+
+		//Point Lights
 		if (mainWindow.getLuzFlippers() && luzObJ1 && luzObJ2) {
 			shaderList[0].SetPointLights(pointLights, pointLightCount);
 		}
@@ -706,11 +725,12 @@ int main()
 			shaderList[0].SetPointLights(pointLights3, pointLightCount - 1);
 		}
 
-	//Spot Lights
+		//Spot Lights
 		if (mainWindow.getLuzTablero() && mainWindow.getLuzLinterna()) {
 			spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
 			shaderList[0].SetSpotLights(spotLights, spotLightCount);
-		}else if (mainWindow.getLuzTablero() && !mainWindow.getLuzLinterna()) {
+		}
+		else if (mainWindow.getLuzTablero() && !mainWindow.getLuzLinterna()) {
 			spotLights2[1].SetFlash(lowerLight, camera.getCameraDirection());
 			shaderList[0].SetSpotLights(spotLights2, spotLightCount - 1);
 		}
@@ -722,7 +742,7 @@ int main()
 			shaderList[0].SetSpotLights(spotLights, spotLightCount - 2);
 		}
 
-//Se implemeta el cambio de la cámara
+		//Se implemeta el cambio de la cámara
 		if (mainWindow.getcambiaCamara()) { //La tecla Z para la cámara isométrica
 			camera2.keyControl(mainWindow.getsKeys(), deltaTime * 0.5f);
 			glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera2.calculateViewMatrix()));
@@ -736,42 +756,87 @@ int main()
 
 		}
 
-//Animación básica de la canica1
+		//Animación básica de la canica1
 		if (mainWindow.getAnimCanica1() == true) {
+			//canica sube
 			if (recorrido1) {
 				movCanica1_Z -= movCanicaOffset * deltaTime;
 				//printf("movCanica1_Z %f\n", movCanica1_Z);
-				if (movCanica1_Z < -70.0f) {
+				if (movCanica1_Z < -75.0f) {
 					recorrido1 = false;
 					recorrido2 = true;
 				}
 			}
-			if (recorrido2) { 
+			//curvatura arriba izquierda
+			if (recorrido2) {
 				movCanica1_X -= movCanicaOffset * deltaTime;
-				if (movCanica1_X < -15.0f) {
+				movCanica1_Z -= movCanicaOffset * deltaTime;
+				if ((movCanica1_Z < -85.0f) && (movCanica1_X < 110.0f)) {
 					recorrido2 = false;
 					recorrido3 = true;
 				}
 			}
-			if (recorrido3) { 
-				movCanica1_Z += movCanicaOffset * deltaTime;
-				if (movCanica1_Z > 90.0f) {
-					recorrido3 = false;
+			//canica izquierda
+			if (recorrido3) {
+				movCanica1_X -= movCanicaOffset * deltaTime;
+				if (movCanica1_X < 40.0f) {
 					recorrido3 = false;
 					recorrido4 = true;
 				}
 			}
+
+			//curva izquierda abajo
 			if (recorrido4) {
-				movCanica1_X += movCanicaOffset * deltaTime;
-				if (movCanica1_X > 125.0f) {
+				movCanica1_X -= movCanicaOffset * deltaTime;
+				movCanica1_Z += movCanicaOffset * deltaTime;
+				if ((movCanica1_Z > -50.0f) && (movCanica1_X < 30.0f)) {
 					recorrido4 = false;
+					recorrido5 = true;
 				}
-			}		
+			}
+
+			//Abajo
+			if (recorrido5) {
+				movCanica1_Z += movCanicaOffset * deltaTime;
+				if (movCanica1_Z > 5.0f) {
+					recorrido5 = false;
+					recorrido6 = true;
+				}
+			}
+
+			//choque con obstaculo de luna
+			if (recorrido6) {
+				movCanica1_X -= movCanicaOffset * deltaTime;
+				movCanica1_Z += movCanicaOffset * deltaTime;
+				if ((movCanica1_Z > 30.0f) && (movCanica1_X < 15.0f)) {
+
+					recorrido6 = false;
+					recorrido7 = true;
+				}
+			}
+
+			//Abajo
+			if (recorrido7) {
+				movCanica1_Z += movCanicaOffset * deltaTime;
+				if (movCanica1_Z > 118.0f) {
+					recorrido7 = false;
+					recorrido8 = true;
+				}
+			}
+
+			//Regresa a su posición
+			if (recorrido8) {
+				movCanica1_X += movCanicaOffset * deltaTime;
+				if (movCanica1_X > 131.0f) {
+					recorrido8 = false;
+				}
+			}
 		}
+
 		if (mainWindow.getAnimCanica1() == false) {
 			recorrido1 = true;
 		}
-		 
+
 		//Animaci�n piramide
 		rot_piramide += rot_piramide_Offset * deltaTime;
 
@@ -783,36 +848,36 @@ int main()
 		glm::mat4 modelaux(1.0);
 		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 
-//Piramide por código 1
+		//Piramide por código 1
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-1.5f, 119.f, -2.0f));
+		model = glm::translate(model, glm::vec3(10.0f, 119.f, 0.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, rot_piramide * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(rot_piramide), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		piramide_T.UseTexture();
-		meshList[4]->RenderMesh();
+		meshList[5]->RenderMesh();
 
-//Piramide por código 2
+		//Piramide por código 2
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(80.0f, 119.f, 50.0f));
+		model = glm::translate(model, glm::vec3(90.0f, 119.f, 50.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, rot_piramide * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(rot_piramide), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		piramide_T.UseTexture();
-		meshList[4]->RenderMesh();
+		meshList[5]->RenderMesh();
 
 
-//Resorte
+		//Resorte
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(125.0f, 132.0f, 145.0f));
-		model = glm::rotate(model, 270 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(132.0f, 129.0f, 150.0f));
+		model = glm::rotate(model, glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		modelaux = model;
-		model = glm::scale(model, glm::vec3(13.05f, 13.05f, 13.05f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
 
-//Animación resorte
+		//Animación resorte
 		if (mainWindow.getAnimResorte() == true) {
 			cambioTam_1 = true;
-			cambioTam_2 = false; 
+			cambioTam_2 = false;
 			if (cambioTam_1) {
 				model = glm::scale(model, glm::vec3(0.05f, 0.005f, 0.05f));
 			}
@@ -829,13 +894,12 @@ int main()
 
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		resorte_M.RenderModel();
-		//resorte_T.UseTexture();
 
-//Dibujamos tablero
+		//Dibujamos tablero
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(50.0f, 110.0f, 0.0f));
 		modelaux = model;
-		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -843,13 +907,12 @@ int main()
 		maquina_M.RenderModel();
 		maquina_T.UseTexture();
 
-//Dibujamos fipplers
-	//Dibujamos filper inf izq
+		//Dibujamos fipplers
+			//Dibujamos filper inf izq
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(10.0f, 123.0f, 120.0f));
+		model = glm::translate(model, glm::vec3(10.0f, 123.0f, 100.0f));
 		modelaux = model;
-		model = glm::rotate(model, 180 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, mainWindow.getMovFlipDer() * toRadians, glm::vec3(0.0f, 0.1f, 0.0f));
+		model = glm::rotate(model, glm::radians(mainWindow.getMovFlipIzq()), glm::vec3(0.0f, 0.1f, 0.0f));
 		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -859,9 +922,9 @@ int main()
 
 		//Dibujamos filper inf der
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(80.0f, 123.0f, 120.0f));
-		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-		model = glm::rotate(model, mainWindow.getMovFlipIzq() * toRadians, glm::vec3(0.0f, 0.1f, 0.0f));
+		model = glm::translate(model, glm::vec3(80.0f, 123.0f, 100.0f));
+		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(mainWindow.getMovFlipDer()), glm::vec3(0.0f, 0.1f, 0.0f));
 		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -872,8 +935,7 @@ int main()
 		//Dibujamos filper sup izq
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-57.0f, 123.0f, -30.0f));
-		model = glm::rotate(model, toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-		model = glm::rotate(model, mainWindow.getMovFlipIzq2() * toRadians, glm::vec3(0.0f, 0.1f, 0.0f));
+		model = glm::rotate(model, glm::radians(mainWindow.getMovFlipIzq2()), glm::vec3(0.0f, 0.1f, 0.0f));
 		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -881,7 +943,7 @@ int main()
 		flipper_M.RenderModel();
 		flipper_T.UseTexture();
 
-//Dibujamos hongo1
+		//Dibujamos hongo1
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 120.0f, -40.0f));
 		model = glm::scale(model, glm::vec3(12.0f, 12.0f, 12.0f));
@@ -890,27 +952,26 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		hongo1_T1.UseTexture();
-		//hongo1_T2.UseTexture();
 		hongo1_M.RenderModel();
 
-//Dibujamos canica 1 - Animación básica
+		//Dibujamos canica 1 - Animación básica
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(movCanica1_X, 122.0f, movCanica1_Z));
 		modelaux = model;
-		model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
+		model = glm::scale(model, glm::vec3(1.25f, 1.25f, 1.25f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		canica1_T.UseTexture();
 		canica1_M.RenderModel();
 
-//Dibujamos canica 2 - Animación Key frames
+		//Dibujamos canica 2 - Animación Key frames
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 85.0f));
 		posicionCanica2 = glm::vec3(pos_X_Canica2 + movCanica2_X, pos_Y_Canica2, pos_Z_Canica2 + movCanica2_Z);
 		model = glm::translate(model, posicionCanica2);
 		modelaux = model;
-		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		model = glm::scale(model, glm::vec3(1.25f, 1.25f, 1.25f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -918,9 +979,9 @@ int main()
 		canica2_M.RenderModel();
 
 		//INSTANCIA PERSONAJE
-		
+
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(110.0f+mainWindow.getMovX(), 121.5f, 100.0f+mainWindow.getMovZ()));
+		model = glm::translate(model, glm::vec3(110.0f + mainWindow.getMovX(), 121.5f, 100.0f + mainWindow.getMovZ()));
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
@@ -931,62 +992,11 @@ int main()
 
 		//INSTANCIA 1 DEL OBJETO JERARQUICO
 
-		//Dibujamos obstaculo jerarquico base (hexagono) inferior derecho
+		//Dibujamos obstaculo jerarquico base (hexagono)
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(45.0f, 123.0f, 50.0f));
-		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::scale(model, glm::vec3(25.0f, 25.0f, 25.0f));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		color = glm::vec3(1.0f, 1.0f, 1.0f);
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		vantaBase_T.UseTexture();
-		baseVanta.RenderModel();
-		
-		modelaux = model;
-
-		//Dibujamos obstaculo jerarquico aspas
-		model = glm::scale(model, glm::vec3(0.8f,0.8f, 0.8f));
-		model = glm::rotate(model, glm::radians(30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::rotate(model, glm::radians(rotAspas), glm::vec3(0.0f, 1.0f, 0.0f));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess); 
-		color = glm::vec3(1.0f, 1.0f, 1.0f);
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		vantaCuerpo_T.UseTexture();
-		vanta.RenderModel();
-
-		model = modelaux;
-
-		//Dibujamos obstaculo jerarquico puerta1
-
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.82f));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		color = glm::vec3(0.0f, 0.0f, 0.0f);
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		puertaVanta1.RenderModel();
-	/*	vantapuerta_T.UseTexture();*/
-
-		model = modelaux;
-
-		//Dibujamos obstaculo jerarquico puerta2
-
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -0.82f));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		color = glm::vec3(0.0f, 0.0f, 0.0f);
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		puertaVanta2.RenderModel();
-		//vantapuerta_T.UseTexture();
-
-
-		//INSTANCIA 2 DEL OBJETO JERARQUICO
-		
-		//Dibujamos obstaculo jerarquico base (hexagono) superior izquierdo
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(85.0f, 123.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(20.0f, 20.0f, 20.0f));
-		
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1005,7 +1015,6 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		vantaCuerpo_T.UseTexture();
 		vanta.RenderModel();
-		
 
 		model = modelaux;
 
@@ -1017,7 +1026,6 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puertaVanta1.RenderModel();
-		//vantapuerta_T.UseTexture();
 
 		model = modelaux;
 
@@ -1029,23 +1037,93 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puertaVanta2.RenderModel();
-		//vantapuerta_T.UseTexture();
 
-		//Dibujamos luna superior
+
+		//INSTANCIA 2 DEL OBJETO JERARQUICO
+
+		//Dibujamos obstaculo jerarquico base (hexagono)
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(55.0f, 123.0f, -100.0f));
-		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::translate(model, glm::vec3(75.0f, 123.0f, -15.0f));
+		model = glm::scale(model, glm::vec3(25.0f, 25.0f, 25.0f));
+
+		color = glm::vec3(1.0f, 1.0f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		vantaBase_T.UseTexture();
+		baseVanta.RenderModel();
+
+		modelaux = model;
+
+		//Dibujamos obstaculo jerarquico aspas
+		model = glm::scale(model, glm::vec3(0.8F, 0.8f, 0.8f));
+		model = glm::rotate(model, glm::radians(30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(rotAspas), glm::vec3(0.0f, 1.0f, 0.0f));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		color = glm::vec3(1.0f, 1.0f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		vantaCuerpo_T.UseTexture();
+		vanta.RenderModel();
+
+		model = modelaux;
+		//Dibujamos obstaculo jerarquico puerta1
+
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.82f));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		puertaVanta1.RenderModel();
+
+		model = modelaux;
+		//Dibujamos obstaculo jerarquico puerta2
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -0.82f));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		puertaVanta2.RenderModel();
+
+		//OBSTÁCULOS LUNA
+
+		//Dibujamos luna 1
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(45.0f, 123.0f, -75.0f));
+		model = glm::scale(model, glm::vec3(20.0f, 20.0f, 20.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		luna1.RenderModel();
 		luna_T.UseTexture();
 
-		//Dibujamos luna inferior
+		//Dibujamos luna 2
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 123.0f, 40.0f));
-		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::translate(model, glm::vec3(-10.0f, 123.0f, 20.0f));
+		model = glm::scale(model, glm::vec3(20.0f, 20.0f, 20.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		luna1.RenderModel();
 		luna_T.UseTexture();
+
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(45.0f, 118.0f, 100.0f));
+		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(25.0f, 1.0f, 25.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		//blending: transparencia o traslucidez
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		arrow_T.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[4]->RenderMesh();
+
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(45.0f, 118.0f, 10.0f));
+		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(25.0f, 1.0f, 25.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		arrow_T.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[4]->RenderMesh();
 
 		glUseProgram(0);
 
