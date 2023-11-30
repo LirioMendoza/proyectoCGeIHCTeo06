@@ -28,7 +28,13 @@
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "SpotLight.h"
-#include "Material.h"
+#include "Material.h" 
+
+//Añadiendo includes para el audio
+#include <irrKlang.h>
+using namespace irrklang;
+
+const float toRadians = 3.14159265f / 180.0f;
 
 Window mainWindow;
 std::vector<Mesh*> meshList;
@@ -56,6 +62,8 @@ Model puertaVanta2;
 Model melody;
 
 Model luna1;
+Model luna2;
+
 //Texturas proyecto
 Texture resorte_T;
 Texture maquina_T;
@@ -68,6 +76,7 @@ Texture piramide_T;
 
 Texture vantaBase_T;
 Texture vantaCuerpo_T;
+Texture vantapuerta_T;
 Texture luna_T;
 
 
@@ -129,14 +138,6 @@ bool recorrido1;
 bool recorrido2;
 bool recorrido3;
 bool recorrido4;
-bool recorrido5;
-bool recorrido6;
-bool recorrido7;
-bool recorrido8;
-
-//Variables animaci�n piramide
-float rot_piramide;
-float rot_piramide_Offset;
 
 //Variables animación por Key frames
 float iniciaAnimacion;
@@ -154,6 +155,10 @@ float movCanica2_Z = 0;
 #define MAX_FRAMES 100
 int i_max_steps = 90;
 int i_curr_steps = 7;
+
+//Variables animaci�n piramide
+float rot_piramide;
+float rot_piramide_Offset;
 
 typedef struct _frame
 {
@@ -370,6 +375,12 @@ void Crear_piramide()
 
 int main()
 {
+	ISoundEngine* engine = createIrrKlangDevice();
+	if (!engine) {
+		return 0;
+	}
+	engine->play2D("media/cute_music1.mp3", true);
+	
 	mainWindow = Window(1366, 768); // 1280, 1024 or 1024, 768
 	mainWindow.Initialise();
 
@@ -382,7 +393,7 @@ int main()
 
 
 	//Modelos proyecto
-	//Resorte
+		//Resorte
 	resorte_M = Model();
 	resorte_M.LoadModel("Models/Resorte/Resorte.obj");
 	//Maquina
@@ -425,10 +436,12 @@ int main()
   //Obstáculos
 	luna1 = Model();
 	luna1.LoadModel("Models/Luna/Luna.obj");
+	
+	luna2 = Model();
 
 
 	//Texturas proyecto
-	//Resorte
+		//Resorte
 	resorte_T = Texture("Textures/Resorte/Metal.jpg");
 	resorte_T.LoadTextureA();
 	//Maquina
@@ -470,6 +483,10 @@ int main()
 	vantaCuerpo_T = Texture("Textures/Vanta/vanta_Base_Color.jpg");
 	vantaCuerpo_T.LoadTextureA();
 
+	vantapuerta_T = Texture("Textures/Vanta/puerta_Base_Color.jpg");
+	vantapuerta_T.LoadTextureA();
+	
+
 	//Textura lunitas
 	luna_T = Texture("Textures/Luna/Luna_Base_Color.jpg");
 	luna_T.LoadTextureA();
@@ -510,7 +527,7 @@ int main()
 	//Luz objeto jerárquico 2
 	pointLights[2] = PointLight(0.0f, 1.0f, 1.5f,
 		1.0f, 1.0f,
-		75.0f, 130.0f, -15.0f,
+		85.0f, 123.0f, 0.0f,
 		0.0f, 0.0f, 0.01f);
 	pointLightCount++;
 
@@ -557,19 +574,15 @@ int main()
 	rot_piramide = 0.0f;
 	rot_piramide_Offset = 5.0f; //Velocidad de giro de la piramide
 
-//Variables animación basica canica1 
-	movCanica1_X = 133.0f;
-	movCanica1_Z = 123.0f;
+//Variables animación baica canica1 
+	movCanica1_X = 125.0f;
+	movCanica1_Z = 100.0f;
 	movCanicaOffset = 1.0f;
 
 	recorrido1 = true;
 	recorrido2 = false;
 	recorrido3 = false;
 	recorrido4 = false;
-	recorrido5 = false;
-	recorrido6 = false;
-	recorrido7 = false;
-	recorrido8 = false;
 
 //Variables animación por key frames canica2 
 	glm::vec3 posicionCanica2 = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -725,81 +738,36 @@ int main()
 
 //Animación básica de la canica1
 		if (mainWindow.getAnimCanica1() == true) {
-			//canica sube
 			if (recorrido1) {
 				movCanica1_Z -= movCanicaOffset * deltaTime;
 				//printf("movCanica1_Z %f\n", movCanica1_Z);
-				if (movCanica1_Z < -75.0f) {
+				if (movCanica1_Z < -70.0f) {
 					recorrido1 = false;
 					recorrido2 = true;
 				}
 			}
-			//curvatura arriba izquierda
-			if (recorrido2) {
+			if (recorrido2) { 
 				movCanica1_X -= movCanicaOffset * deltaTime;
-				movCanica1_Z -= movCanicaOffset * deltaTime;
-				if ((movCanica1_Z < -85.0f) && (movCanica1_X < 110.0f)) {
+				if (movCanica1_X < -15.0f) {
 					recorrido2 = false;
 					recorrido3 = true;
 				}
 			}
-			//canica izquierda
-			if (recorrido3) {
-				movCanica1_X -= movCanicaOffset * deltaTime;
-				if (movCanica1_X < 40.0f) {
+			if (recorrido3) { 
+				movCanica1_Z += movCanicaOffset * deltaTime;
+				if (movCanica1_Z > 90.0f) {
+					recorrido3 = false;
 					recorrido3 = false;
 					recorrido4 = true;
 				}
-			}	
-
-			//curva izquierda abajo
+			}
 			if (recorrido4) {
-				movCanica1_X -= movCanicaOffset * deltaTime;
-				movCanica1_Z += movCanicaOffset * deltaTime;
-				if ((movCanica1_Z > -50.0f) && (movCanica1_X < 30.0f)) {
-					recorrido4 = false;
-					recorrido5 = true;
-				}
-			}
-
-			//Abajo
-			if (recorrido5) {
-				movCanica1_Z += movCanicaOffset * deltaTime;
-				if (movCanica1_Z > 5.0f) {
-					recorrido5 = false;
-					recorrido6 = true;
-				}
-			}
-
-			//choque con obstaculo de luna
-			if (recorrido6) {
-				movCanica1_X -= movCanicaOffset * deltaTime;
-				movCanica1_Z += movCanicaOffset * deltaTime;
-				if ((movCanica1_Z > 30.0f) && (movCanica1_X < 15.0f)) {
-
-					recorrido6 = false;
-					recorrido7 = true;
-				}
-			}
-
-			//Abajo
-			if (recorrido7) {
-				movCanica1_Z += movCanicaOffset * deltaTime;
-				if (movCanica1_Z > 118.0f) {
-					recorrido7 = false;
-					recorrido8 = true;
-				}
-			}
-
-			//Regresa a su posición
-			if (recorrido8) {
 				movCanica1_X += movCanicaOffset * deltaTime;
-				if (movCanica1_X > 131.0f) {
-					recorrido8 = false;
+				if (movCanica1_X > 125.0f) {
+					recorrido4 = false;
 				}
 			}		
 		}
-
 		if (mainWindow.getAnimCanica1() == false) {
 			recorrido1 = true;
 		}
@@ -817,18 +785,18 @@ int main()
 
 //Piramide por código 1
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(10.0f, 119.f, 0.0f));
+		model = glm::translate(model, glm::vec3(-1.5f, 119.f, -2.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, glm::radians(rot_piramide), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, rot_piramide * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		piramide_T.UseTexture();
 		meshList[4]->RenderMesh();
 
 //Piramide por código 2
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(90.0f, 119.f, 50.0f));
+		model = glm::translate(model, glm::vec3(80.0f, 119.f, 50.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, glm::radians(rot_piramide), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, rot_piramide * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		piramide_T.UseTexture();
 		meshList[4]->RenderMesh();
@@ -836,10 +804,10 @@ int main()
 
 //Resorte
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(132.0f, 129.0f, 150.0f));
-		model = glm::rotate(model, glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(125.0f, 132.0f, 145.0f));
+		model = glm::rotate(model, 270 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 		modelaux = model;
-		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::scale(model, glm::vec3(13.05f, 13.05f, 13.05f));
 
 //Animación resorte
 		if (mainWindow.getAnimResorte() == true) {
@@ -861,12 +829,13 @@ int main()
 
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		resorte_M.RenderModel();
+		//resorte_T.UseTexture();
 
 //Dibujamos tablero
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(50.0f, 110.0f, 0.0f));
 		modelaux = model;
-		model = glm::rotate(model, glm::radians(180.0f) , glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -877,9 +846,10 @@ int main()
 //Dibujamos fipplers
 	//Dibujamos filper inf izq
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(10.0f, 123.0f, 100.0f));
+		model = glm::translate(model, glm::vec3(10.0f, 123.0f, 120.0f));
 		modelaux = model;
-		model = glm::rotate(model,  glm::radians(mainWindow.getMovFlipIzq()), glm::vec3(0.0f, 0.1f, 0.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, mainWindow.getMovFlipDer() * toRadians, glm::vec3(0.0f, 0.1f, 0.0f));
 		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -889,9 +859,9 @@ int main()
 
 		//Dibujamos filper inf der
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(80.0f, 123.0f, 100.0f));
-		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::rotate(model, glm::radians(mainWindow.getMovFlipDer()), glm::vec3(0.0f, 0.1f, 0.0f));
+		model = glm::translate(model, glm::vec3(80.0f, 123.0f, 120.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::rotate(model, mainWindow.getMovFlipIzq() * toRadians, glm::vec3(0.0f, 0.1f, 0.0f));
 		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -902,7 +872,8 @@ int main()
 		//Dibujamos filper sup izq
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-57.0f, 123.0f, -30.0f));
-		model = glm::rotate(model, glm::radians(mainWindow.getMovFlipIzq2()), glm::vec3(0.0f, 0.1f, 0.0f));
+		model = glm::rotate(model, toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::rotate(model, mainWindow.getMovFlipIzq2() * toRadians, glm::vec3(0.0f, 0.1f, 0.0f));
 		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -919,13 +890,14 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		hongo1_T1.UseTexture();
+		//hongo1_T2.UseTexture();
 		hongo1_M.RenderModel();
 
 //Dibujamos canica 1 - Animación básica
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(movCanica1_X, 122.0f, movCanica1_Z));
 		modelaux = model;
-		model = glm::scale(model, glm::vec3(1.25f, 1.25f, 1.25f));
+		model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -938,7 +910,7 @@ int main()
 		posicionCanica2 = glm::vec3(pos_X_Canica2 + movCanica2_X, pos_Y_Canica2, pos_Z_Canica2 + movCanica2_Z);
 		model = glm::translate(model, posicionCanica2);
 		modelaux = model;
-		model = glm::scale(model, glm::vec3(1.25f, 1.25f, 1.25f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -959,10 +931,10 @@ int main()
 
 		//INSTANCIA 1 DEL OBJETO JERARQUICO
 
-		//Dibujamos obstaculo jerarquico base (hexagono)
+		//Dibujamos obstaculo jerarquico base (hexagono) inferior derecho
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(45.0f, 123.0f, 50.0f));
-		model = glm::scale(model, glm::vec3(25.0f, 25.0f, 25.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -973,7 +945,7 @@ int main()
 		modelaux = model;
 
 		//Dibujamos obstaculo jerarquico aspas
-		model = glm::scale(model, glm::vec3(0.8F,0.8f, 0.8f));
+		model = glm::scale(model, glm::vec3(0.8f,0.8f, 0.8f));
 		model = glm::rotate(model, glm::radians(30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::rotate(model, glm::radians(rotAspas), glm::vec3(0.0f, 1.0f, 0.0f));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess); 
@@ -989,10 +961,11 @@ int main()
 
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.82f));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
+		color = glm::vec3(0.0f, 0.0f, 0.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puertaVanta1.RenderModel();
+	/*	vantapuerta_T.UseTexture();*/
 
 		model = modelaux;
 
@@ -1000,18 +973,19 @@ int main()
 
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -0.82f));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
+		color = glm::vec3(0.0f, 0.0f, 0.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puertaVanta2.RenderModel();
+		//vantapuerta_T.UseTexture();
 
 
 		//INSTANCIA 2 DEL OBJETO JERARQUICO
 		
-		//Dibujamos obstaculo jerarquico base (hexagono)
+		//Dibujamos obstaculo jerarquico base (hexagono) superior izquierdo
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(75.0f, 123.0f, -15.0f));
-		model = glm::scale(model, glm::vec3(25.0f, 25.0f, 25.0f));
+		model = glm::translate(model, glm::vec3(85.0f, 123.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(20.0f, 20.0f, 20.0f));
 		
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -1032,7 +1006,9 @@ int main()
 		vantaCuerpo_T.UseTexture();
 		vanta.RenderModel();
 		
+
 		model = modelaux;
+
 		//Dibujamos obstaculo jerarquico puerta1
 
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.82f));
@@ -1041,30 +1017,32 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puertaVanta1.RenderModel();
+		//vantapuerta_T.UseTexture();
 
 		model = modelaux;
+
 		//Dibujamos obstaculo jerarquico puerta2
+
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -0.82f));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		color = glm::vec3(0.9254901960784314f, 0.45098039215686275f, 0.9137254901960784f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puertaVanta2.RenderModel();
-	
-		//OBSTÁCULOS LUNA
+		//vantapuerta_T.UseTexture();
 
-		//Dibujamos luna 1
+		//Dibujamos luna superior
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(45.0f, 123.0f, -75.0f));
-		model = glm::scale(model, glm::vec3(20.0f, 20.0f, 20.0f));
+		model = glm::translate(model, glm::vec3(55.0f, 123.0f, -100.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		luna1.RenderModel();
 		luna_T.UseTexture();
 
-		//Dibujamos luna 2
+		//Dibujamos luna inferior
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-10.0f, 123.0f, 20.0f));
-		model = glm::scale(model, glm::vec3(20.0f, 20.0f, 20.0f));
+		model = glm::translate(model, glm::vec3(0.0f, 123.0f, 40.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		luna1.RenderModel();
 		luna_T.UseTexture();
@@ -1073,6 +1051,8 @@ int main()
 
 		mainWindow.swapBuffers();
 	}
+
+	engine->drop();
 
 	return 0;
 }
