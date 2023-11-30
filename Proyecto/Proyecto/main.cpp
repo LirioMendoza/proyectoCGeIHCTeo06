@@ -69,6 +69,7 @@ Texture piramide_T;
 Texture vantaBase_T;
 Texture vantaCuerpo_T;
 Texture luna_T;
+Texture arrow_T;
 
 
 Skybox skybox;
@@ -305,6 +306,19 @@ void CreateObjects()
 
 
 	};
+
+	unsigned int arrowI[] = {
+	   0, 1, 2,
+	   0, 2, 3,
+	};
+
+	GLfloat arrowV[] = {
+		-0.5f, 0.0f, 0.5f,		0.0f, 0.0f,		0.0f, -1.0f, 0.0f,
+		0.5f, 0.0f, 0.5f,		1.0f, 0.0f,		0.0f, -1.0f, 0.0f,
+		0.5f, 0.0f, -0.5f,		1.0f, 1.0f,		0.0f, -1.0f, 0.0f,
+		-0.5f, 0.0f, -0.5f,		0.0f, 1.0f,		0.0f, -1.0f, 0.0f,
+
+	};
 	
 	Mesh *obj1 = new Mesh();
 	obj1->CreateMesh(vertices, indices, 32, 12);
@@ -321,6 +335,10 @@ void CreateObjects()
 	Mesh* obj4 = new Mesh();
 	obj4->CreateMesh(vegetacionVertices, vegetacionIndices, 64, 12);
 	meshList.push_back(obj4);
+
+	Mesh* obj5 = new Mesh();
+	obj5->CreateMesh(arrowV, arrowI, 32, 6);
+	meshList.push_back(obj5);
 
 	calcAverageNormals(indices, 12, vertices, 32, 8, 5);
 
@@ -474,6 +492,9 @@ int main()
 	luna_T = Texture("Textures/Luna/Luna_Base_Color.jpg");
 	luna_T.LoadTextureA();
 
+	//Textura flechas
+	arrow_T = Texture("Textures/Pinball/arrow.png");
+	arrow_T.LoadTextureA();
 
 	std::vector<std::string> skyboxFaces;
 
@@ -822,7 +843,7 @@ int main()
 		model = glm::rotate(model, glm::radians(rot_piramide), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		piramide_T.UseTexture();
-		meshList[4]->RenderMesh();
+		meshList[5]->RenderMesh();
 
 //Piramide por código 2
 		model = glm::mat4(1.0);
@@ -831,7 +852,7 @@ int main()
 		model = glm::rotate(model, glm::radians(rot_piramide), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		piramide_T.UseTexture();
-		meshList[4]->RenderMesh();
+		meshList[5]->RenderMesh();
 
 
 //Resorte
@@ -1068,6 +1089,29 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		luna1.RenderModel();
 		luna_T.UseTexture();
+
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(45.0f, 118.0f, 100.0f));
+		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(25.0f, 1.0f, 25.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		//blending: transparencia o traslucidez
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		arrow_T.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[4]->RenderMesh();
+
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(45.0f, 118.0f, 10.0f));
+		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(25.0f, 1.0f, 25.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		arrow_T.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[4]->RenderMesh();
 
 		glUseProgram(0);
 
