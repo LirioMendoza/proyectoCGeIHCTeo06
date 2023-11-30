@@ -30,6 +30,10 @@
 #include "SpotLight.h"
 #include "Material.h"
 
+//Añadiendo includes para el audio
+#include <irrKlang.h>
+using namespace irrklang;
+
 Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
@@ -84,7 +88,7 @@ GLfloat lastTime = 0.0f;
 static double limitFPS = 1.0 / 60.0;
 
 // luz direccional
-DirectionalLight mainLight; 
+DirectionalLight mainLight;
 DirectionalLight mainLight2;
 
 //Luces de tipo pointlight
@@ -146,7 +150,7 @@ bool animacion = false;
 
 //Variables animación canica2
 float pos_X_Canica2 = 70.0f; //Hay que inicializar en la posici�n inicial
-float pos_Y_Canica2 = 119.0f; 
+float pos_Y_Canica2 = 119.0f;
 float pos_Z_Canica2 = 4.0f;
 
 float movCanica2_X = 0;
@@ -319,16 +323,17 @@ void CreateObjects()
 		-0.5f, 0.0f, -0.5f,		0.0f, 1.0f,		0.0f, -1.0f, 0.0f,
 
 	};
-	
+
 	Mesh *obj1 = new Mesh();
+  
 	obj1->CreateMesh(vertices, indices, 32, 12);
 	meshList.push_back(obj1);
 
-	Mesh *obj2 = new Mesh();
+	Mesh* obj2 = new Mesh();
 	obj2->CreateMesh(vertices, indices, 32, 12);
 	meshList.push_back(obj2);
 
-	Mesh *obj3 = new Mesh();
+	Mesh* obj3 = new Mesh();
 	obj3->CreateMesh(floorVertices, floorIndices, 32, 6);
 	meshList.push_back(obj3);
 
@@ -349,7 +354,7 @@ void CreateObjects()
 
 void CreateShaders()
 {
-	Shader *shader1 = new Shader();
+	Shader* shader1 = new Shader();
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
 }
@@ -369,15 +374,15 @@ void Crear_piramide()
 		1.0f, 0.0f, 0.0f,		0.33f,  0.33f,		0.0f,	1.0f,	0.0f,
 		 0.5f, 1.0f, 0.0f,		0.66f,  0.33f,		0.0f,	1.0f,	0.0f,
 
-		// Cara frontal
-		 0.0f, 0.0f, 0.0f,		0.8f,  0.66f,		0.0f,   1.0f,   0.0f,
-		 0.5f, 1.0f, 0.0f,		0.66f,  0.33f,		0.0f,   1.0f,   0.0f,
-		0.5f, 0.0f, 1.0f,		1.0f,  0.33f,		0.0f,   1.0f,   0.0f,
+		 // Cara frontal
+		  0.0f, 0.0f, 0.0f,		0.8f,  0.66f,		0.0f,   1.0f,   0.0f,
+		  0.5f, 1.0f, 0.0f,		0.66f,  0.33f,		0.0f,   1.0f,   0.0f,
+		 0.5f, 0.0f, 1.0f,		1.0f,  0.33f,		0.0f,   1.0f,   0.0f,
 
-		// Cara superior
-		 1.0f, 0.0f, 0.0f,		0.2f,  0.66f,		0.0f,   0.0f,   1.0f,
-		0.5f, 1.0f, 0.0f,		0.0f,  0.33f,		0.0f,   0.0f,   1.0f,
-		 0.5f, 0.0f, 1.0f,		0.33f,  0.33f,		0.0f,   0.0f,   1.0f,
+		 // Cara superior
+		  1.0f, 0.0f, 0.0f,		0.2f,  0.66f,		0.0f,   0.0f,   1.0f,
+		 0.5f, 1.0f, 0.0f,		0.0f,  0.33f,		0.0f,   0.0f,   1.0f,
+		  0.5f, 0.0f, 1.0f,		0.33f,  0.33f,		0.0f,   0.0f,   1.0f,
 	};
 
 	Mesh* piramide = new Mesh();
@@ -388,6 +393,13 @@ void Crear_piramide()
 
 int main()
 {
+	ISoundEngine* engine = createIrrKlangDevice();
+	if (!engine) {
+		return 0;
+	}
+	engine->play2D("media/sweet-cafe.mp3", true);
+
+
 	mainWindow = Window(1366, 768); // 1280, 1024 or 1024, 768
 	mainWindow.Initialise();
 
@@ -440,7 +452,7 @@ int main()
 	melody = Model();
 	melody.LoadModel("Models/Melody/melody.obj");
 
-  //Obstáculos
+	//Obstáculos
 	luna1 = Model();
 	luna1.LoadModel("Models/Luna/Luna.obj");
 
@@ -512,9 +524,9 @@ int main()
 
 	//contador de luces puntuales
 	unsigned int pointLightCount = 0;
-	
+
 	//Luz entre los flippers
-	pointLights[0] = PointLight(0.9176470588235294f, 0.792156862745098f, 0.09411764705882353f, 
+	pointLights[0] = PointLight(0.9176470588235294f, 0.792156862745098f, 0.09411764705882353f,
 		20.0f, 10.0f,
 		//+/-Intensidad de color   //+/- Radiante de color
 		45.0f, 130.0f, 120.0f, //Ubicación de la luz
@@ -563,7 +575,7 @@ int main()
 		1.0f, 0.0f, 0.0f,
 		50.0f); //Ángulo - Ampliación de diametro
 	spotLightCount++;
-  
+
 	// Segundo arreglo luz spot
 	spotLights2[0] = spotLights[1]; //Luz tablero
 	spotLights2[1] = spotLights[0]; //Linterna personaje
@@ -578,7 +590,7 @@ int main()
 	rot_piramide = 0.0f;
 	rot_piramide_Offset = 5.0f; //Velocidad de giro de la piramide
 
-//Variables animación basica canica1 
+	//Variables animación basica canica1 
 	movCanica1_X = 133.0f;
 	movCanica1_Z = 123.0f;
 	movCanicaOffset = 1.0f;
@@ -592,20 +604,20 @@ int main()
 	recorrido7 = false;
 	recorrido8 = false;
 
-//Variables animación por key frames canica2 
+	//Variables animación por key frames canica2 
 	glm::vec3 posicionCanica2 = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	KeyFrame[0].movCanica2_X = 0.0f;
 	KeyFrame[0].movCanica2_Z = 0.0f;
 
 	KeyFrame[1].movCanica2_X = -60.0f; //Se desplaza a la flor morada
-	KeyFrame[1].movCanica2_Z = -40.0f; 
+	KeyFrame[1].movCanica2_Z = -40.0f;
 
 	KeyFrame[2].movCanica2_X = -10.0f; //Se desplaza a la flor azul
-	KeyFrame[2].movCanica2_Z = -82.0f; 
+	KeyFrame[2].movCanica2_Z = -82.0f;
 
 	KeyFrame[3].movCanica2_X = -60.0f; //Se desplaza al hongo
-	KeyFrame[3].movCanica2_Z = -125.0f; 
+	KeyFrame[3].movCanica2_Z = -125.0f;
 
 	KeyFrame[4].movCanica2_X = -10.0f; //Se desplaza a la flor azul de regreso
 	KeyFrame[4].movCanica2_Z = -82.0f;
@@ -669,7 +681,7 @@ int main()
 		uniformView = shaderList[0].GetViewLocation();
 		uniformEyePosition = shaderList[0].GetEyePositionLocation();
 		uniformColor = shaderList[0].getColorLocation();
-		
+
 		//información en el shader de intensidad especular y brillo
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 		uniformShininess = shaderList[0].GetShininessLocation();
@@ -688,10 +700,10 @@ int main()
 		else {
 			shaderList[0].SetDirectionalLight(&mainLight2);
 		}
-		
-	//Funciones para prender y apagar luces
-    
-	//Point Lights
+
+		//Funciones para prender y apagar luces
+
+		//Point Lights
 		if (mainWindow.getLuzFlippers() && luzObJ1 && luzObJ2) {
 			shaderList[0].SetPointLights(pointLights, pointLightCount);
 		}
@@ -714,11 +726,12 @@ int main()
 			shaderList[0].SetPointLights(pointLights3, pointLightCount - 1);
 		}
 
-	//Spot Lights
+		//Spot Lights
 		if (mainWindow.getLuzTablero() && mainWindow.getLuzLinterna()) {
 			spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
 			shaderList[0].SetSpotLights(spotLights, spotLightCount);
-		}else if (mainWindow.getLuzTablero() && !mainWindow.getLuzLinterna()) {
+		}
+		else if (mainWindow.getLuzTablero() && !mainWindow.getLuzLinterna()) {
 			spotLights2[1].SetFlash(lowerLight, camera.getCameraDirection());
 			shaderList[0].SetSpotLights(spotLights2, spotLightCount - 1);
 		}
@@ -730,7 +743,7 @@ int main()
 			shaderList[0].SetSpotLights(spotLights, spotLightCount - 2);
 		}
 
-//Se implemeta el cambio de la cámara
+		//Se implemeta el cambio de la cámara
 		if (mainWindow.getcambiaCamara()) { //La tecla Z para la cámara isométrica
 			camera2.keyControl(mainWindow.getsKeys(), deltaTime * 0.5f);
 			glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera2.calculateViewMatrix()));
@@ -744,7 +757,7 @@ int main()
 
 		}
 
-//Animación básica de la canica1
+		//Animación básica de la canica1
 		if (mainWindow.getAnimCanica1() == true) {
 			//canica sube
 			if (recorrido1) {
@@ -771,7 +784,7 @@ int main()
 					recorrido3 = false;
 					recorrido4 = true;
 				}
-			}	
+			}
 
 			//curva izquierda abajo
 			if (recorrido4) {
@@ -818,13 +831,13 @@ int main()
 				if (movCanica1_X > 131.0f) {
 					recorrido8 = false;
 				}
-			}		
+			}
 		}
 
 		if (mainWindow.getAnimCanica1() == false) {
 			recorrido1 = true;
 		}
-		 
+
 		//Animaci�n piramide
 		rot_piramide += rot_piramide_Offset * deltaTime;
 
@@ -836,7 +849,7 @@ int main()
 		glm::mat4 modelaux(1.0);
 		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 
-//Piramide por código 1
+		//Piramide por código 1
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(10.0f, 119.f, 0.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
@@ -845,7 +858,7 @@ int main()
 		piramide_T.UseTexture();
 		meshList[5]->RenderMesh();
 
-//Piramide por código 2
+		//Piramide por código 2
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(90.0f, 119.f, 50.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
@@ -855,17 +868,17 @@ int main()
 		meshList[5]->RenderMesh();
 
 
-//Resorte
+		//Resorte
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(132.0f, 129.0f, 150.0f));
 		model = glm::rotate(model, glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		modelaux = model;
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
 
-//Animación resorte
+		//Animación resorte
 		if (mainWindow.getAnimResorte() == true) {
 			cambioTam_1 = true;
-			cambioTam_2 = false; 
+			cambioTam_2 = false;
 			if (cambioTam_1) {
 				model = glm::scale(model, glm::vec3(0.05f, 0.005f, 0.05f));
 			}
@@ -883,11 +896,11 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		resorte_M.RenderModel();
 
-//Dibujamos tablero
+		//Dibujamos tablero
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(50.0f, 110.0f, 0.0f));
 		modelaux = model;
-		model = glm::rotate(model, glm::radians(180.0f) , glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -895,12 +908,12 @@ int main()
 		maquina_M.RenderModel();
 		maquina_T.UseTexture();
 
-//Dibujamos fipplers
-	//Dibujamos filper inf izq
+		//Dibujamos fipplers
+			//Dibujamos filper inf izq
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(10.0f, 123.0f, 100.0f));
 		modelaux = model;
-		model = glm::rotate(model,  glm::radians(mainWindow.getMovFlipIzq()), glm::vec3(0.0f, 0.1f, 0.0f));
+		model = glm::rotate(model, glm::radians(mainWindow.getMovFlipIzq()), glm::vec3(0.0f, 0.1f, 0.0f));
 		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -931,7 +944,7 @@ int main()
 		flipper_M.RenderModel();
 		flipper_T.UseTexture();
 
-//Dibujamos hongo1
+		//Dibujamos hongo1
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 120.0f, -40.0f));
 		model = glm::scale(model, glm::vec3(12.0f, 12.0f, 12.0f));
@@ -942,7 +955,7 @@ int main()
 		hongo1_T1.UseTexture();
 		hongo1_M.RenderModel();
 
-//Dibujamos canica 1 - Animación básica
+		//Dibujamos canica 1 - Animación básica
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(movCanica1_X, 122.0f, movCanica1_Z));
 		modelaux = model;
@@ -953,7 +966,7 @@ int main()
 		canica1_T.UseTexture();
 		canica1_M.RenderModel();
 
-//Dibujamos canica 2 - Animación Key frames
+		//Dibujamos canica 2 - Animación Key frames
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 85.0f));
 		posicionCanica2 = glm::vec3(pos_X_Canica2 + movCanica2_X, pos_Y_Canica2, pos_Z_Canica2 + movCanica2_Z);
@@ -967,9 +980,9 @@ int main()
 		canica2_M.RenderModel();
 
 		//INSTANCIA PERSONAJE
-		
+
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(110.0f+mainWindow.getMovX(), 121.5f, 100.0f+mainWindow.getMovZ()));
+		model = glm::translate(model, glm::vec3(110.0f + mainWindow.getMovX(), 121.5f, 100.0f + mainWindow.getMovZ()));
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
@@ -990,14 +1003,14 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		vantaBase_T.UseTexture();
 		baseVanta.RenderModel();
-		
+
 		modelaux = model;
 
 		//Dibujamos obstaculo jerarquico aspas
-		model = glm::scale(model, glm::vec3(0.8F,0.8f, 0.8f));
+		model = glm::scale(model, glm::vec3(0.8F, 0.8f, 0.8f));
 		model = glm::rotate(model, glm::radians(30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::rotate(model, glm::radians(rotAspas), glm::vec3(0.0f, 1.0f, 0.0f));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess); 
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1028,12 +1041,12 @@ int main()
 
 
 		//INSTANCIA 2 DEL OBJETO JERARQUICO
-		
+
 		//Dibujamos obstaculo jerarquico base (hexagono)
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(75.0f, 123.0f, -15.0f));
 		model = glm::scale(model, glm::vec3(25.0f, 25.0f, 25.0f));
-		
+
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1052,7 +1065,7 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		vantaCuerpo_T.UseTexture();
 		vanta.RenderModel();
-		
+
 		model = modelaux;
 		//Dibujamos obstaculo jerarquico puerta1
 
@@ -1071,7 +1084,7 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puertaVanta2.RenderModel();
-	
+
 		//OBSTÁCULOS LUNA
 
 		//Dibujamos luna 1
@@ -1117,6 +1130,8 @@ int main()
 
 		mainWindow.swapBuffers();
 	}
+
+	engine->drop();
 
 	return 0;
 }
