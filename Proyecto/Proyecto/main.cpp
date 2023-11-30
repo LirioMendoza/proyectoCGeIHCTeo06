@@ -324,7 +324,8 @@ void CreateObjects()
 
 	};
 
-	Mesh* obj1 = new Mesh();
+	Mesh *obj1 = new Mesh();
+  
 	obj1->CreateMesh(vertices, indices, 32, 12);
 	meshList.push_back(obj1);
 
